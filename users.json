@@ -1,0 +1,14 @@
+[
+  {
+    "email": "admin@kiranregmi.com",
+    "password": "$2b$10$J.TSX3R1Vn99jctk4dbr5utTuwnRoayljDrMIE2xOX.OruSIgGoMi",
+    "role": "admin",
+    "name": "Admin User"
+  },
+  {
+    "email": "user@kiranregmi.com",
+    "password": "$2b$10$zIYfMDcPvh6PluM4XC48DuMiE57XtmMTXlAwTa4W/FQDhzF/sWED6",
+    "role": "user",
+    "name": "Standard User"
+  }
+]
