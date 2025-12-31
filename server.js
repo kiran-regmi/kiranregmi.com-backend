@@ -48,21 +48,3 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
-
-  const token = jwt.sign(
-    { email: user.email, role: user.role },
-    "SUPER_SECRET",
-    { expiresIn: "2h" }
-  );
-
-  res.json({ token, role: user.role });
-;
-
-app.get("/", (req, res) => {
-  res.send("Backend Running");
-});
-
-app.listen(PORT, () =>
-  console.log(`Backend live → http://localhost:${PORT}`)
-);
