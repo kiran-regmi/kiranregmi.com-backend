@@ -28,8 +28,8 @@ app.use(cors({
   origin: [
     "http://localhost:8080",
     "http://localhost:5173",
-    "https://kiranregmi.com",
-    "https://www.kiranregmi.com"
+    "http://kiranregmi.com",
+    "https://kiranregmi.com"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
