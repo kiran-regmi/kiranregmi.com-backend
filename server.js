@@ -17,7 +17,7 @@ app.use(express.json());
 const allowedOrigins = [
   "https://kiranregmi.com",
   "http://localhost:5000",
-  "http://localhost:3000"
+  "http://localhost:8080"
 ];
 
 app.use(cors({
