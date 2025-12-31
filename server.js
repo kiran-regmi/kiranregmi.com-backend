@@ -1,54 +1,49 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const path = require("path");
-const fs = require("fs");
-const bcrypt = require("bcryptjs");
+import express from "express";
+import cors from "cors";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import bcrypt from "bcryptjs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+app.use(express.json());
 
-// Middleware
+// CORS FIX ⬇⬇⬇
 app.use(cors({
-  origin: ["https://kiranregmi.com", "https://www.kiranregmi.com"],
+  origin: "https://kiranregmi.com", // allow requests from your frontend
   methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
   credentials: true
 }));
+// CORS FIX END ⬆⬆⬆
 
-app.use(bodyParser.json());
+// File paths
+const USERS_FILE = path.join(__dirname, "users.json");
 
-// Load Users + Questions
-const users = JSON.parse(fs.readFileSync(path.join(__dirname, "users.json"), "utf8"));
-const questions = JSON.parse(fs.readFileSync(path.join(__dirname, "questions.json"), "utf8"));
+// Load Users
+let users = JSON.parse(fs.readFileSync(USERS_FILE));
 
-// LOGIN
-app.post("/api/login", async (req, res) => {
+// LOGIN API
+app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
+  const user = users.find(u => u.email === email);
 
-  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) return res.status(401).json({ success: false, message: "Invalid email or password" });
+  if (!user) {
+    return res.status(400).json({ success: false, message: "Invalid email or password" });
+  }
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(401).json({ success: false, message: "Invalid email or password" });
+  const isValid = bcrypt.compareSync(password, user.passwordHash);
 
-  return res.json({
-    success: true,
-    email: user.email,
-    role: user.role
-  });
-});
+  if (!isValid) {
+    return res.status(400).json({ success: false, message: "Invalid email or password" });
+  }
 
-// QUESTIONS API
-app.get("/api/questions", (req, res) => {
-  res.json(questions);
-});
-
-// Root Test
-app.get("/", (req, res) => {
-  res.send("Backend is running ✔");
+  return res.json({ success: true });
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
