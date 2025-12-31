@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const { JWT_SECRET, PORT } = require("./config");
 
 // users + questions loaded from JSON
@@ -15,17 +17,46 @@ const QUESTIONS_FILE = path.join(__dirname, "questions.json");
 
 const app = express();
 
+// trust Render proxy so HTTPS checks work
+app.set("trust proxy", 1);
+
+// Basic hardening headers
+app.use(helmet());
+
 // Enable CORS for local Dev + Live Domain
 app.use(cors({
   origin: [
-    "http://kiranregmi.com",
-    "https://kiranregmi.com"
+    "http://localhost:8080",
+    "http://localhost:5173",
+    "https://kiranregmi.com",
+    "https://www.kiranregmi.com"
   ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+})
+);
 
 app.use(express.json());
+
+// Enforce HTTPS in production (Render)
+if (process.env.NODE_ENV === "production") {
+  app.use((req, res, next) => {
+    const proto = req.headers["x-forwarded-proto"];
+    if (proto && proto !== "https") {
+      return res.redirect("https://" + req.headers.host + req.url);
+    }
+    next();
+  });
+}
+
+// Rate limit all /api/* routes – A+3 choice
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,                 // 100 reqs per IP per window
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api", apiLimiter);
 
 /* ---------------- AUTH ---------------- */
 
@@ -118,6 +149,9 @@ app.post("/api/questions", verifyToken, verifyAdmin, (req, res) => {
 });
 
 /* ---------------- START SERVER ---------------- */
-app.listen(PORT, () =>
-  console.log(`Backend running on port ${PORT}`)
-);
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
