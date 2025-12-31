@@ -23,18 +23,32 @@ const usersPath = path.resolve("users.json");
 let users = JSON.parse(fs.readFileSync(usersPath, "utf8"));
 
 // Login Route
-app.post("/api/login", (req, res) => {
-  const { email, password } = req.body;
-  const user = users.find(u => u.email === email);
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Invalid email" });
+    }
 
-  const isMatch = bcrypt.compareSync(password, user.password);
-  if (!isMatch) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Invalid password" });
+    }
+
+    res.json({
+      success: true,
+      email: user.email,
+      role: user.role || "user"
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
+});
+
 
   const token = jwt.sign(
     { email: user.email, role: user.role },
@@ -43,7 +57,7 @@ app.post("/api/login", (req, res) => {
   );
 
   res.json({ token, role: user.role });
-});
+;
 
 app.get("/", (req, res) => {
   res.send("Backend Running");
