@@ -13,10 +13,18 @@ const app = express();
 app.use(express.json());
 
 // CORS
+// Allow multiple valid origins
+const allowedOrigins = [
+  "https://kiranregmi.com",
+  "http://localhost:5000",
+  "http://localhost:3000"
+];
+
 app.use(cors({
-  origin: "https://kiranregmi.com",
+  origin: allowedOrigins,
   credentials: true
 }));
+
 
 // DATA FILES
 const USERS_FILE = path.join(__dirname, "users.json");
