@@ -58,28 +58,25 @@ function createToken(user) {
 }
 
 // ---------- /api/login ----------
-import bcrypt from "bcryptjs";
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body || {};
 
-app.post("/api/login", (req, res) => {
-  const { email, password } = req.body;
-  const user = users.find(u => u.email === email);
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
+    }
 
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
+    const user = users.find(
+      (u) => u.email.toLowerCase() === String(email).toLowerCase()
+    );
 
-  const isMatch = bcrypt.compareSync(password, user.passwordHash);
-  if (!isMatch) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-
-  res.json({
-    message: "Login successful",
-    token: "testtoken123",
-    role: user.role
-  });
-});
-
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "Invalid email or password (user not found)." });
+    }
 
     // users.json uses passwordHash, not password
     const valid = await bcrypt.compare(password, user.passwordHash);
