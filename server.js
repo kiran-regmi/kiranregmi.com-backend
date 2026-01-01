@@ -53,25 +53,22 @@ app.post("/api/login", async (req, res) => {
     }
 });
 
-// ✨ GET QUESTIONS — Protected Endpoint
+// ✨ QUESTIONS API — Protected Endpoint
 app.get("/api/questions", async (req, res) => {
-    try {
-        const data = JSON.parse(await fs.readFile(QUESTIONS_FILE, "utf-8"));
-        res.json(data);
-    } catch {
-        res.status(500).json({ error: "Failed to load questions" });
-    }
+  try {
+    const data = await fs.readFile(path.join(__dirname, "questions.json"), "utf-8");
+    const questions = JSON.parse(data);
+
+    res.json({
+      success: true,
+      questions
+    });
+  } catch (err) {
+    console.error("Error loading questions:", err);
+    res.status(500).json({ success: false, message: "Server error loading questions" });
+  }
 });
 
-// ✨ GET PROJECTS — Protected Endpoint
-app.get("/api/projects", async (req, res) => {
-    try {
-        const data = JSON.parse(await fs.readFile(PROJECTS_FILE, "utf-8"));
-        res.json(data);
-    } catch {
-        res.status(500).json({ error: "Failed to load projects" });
-    }
-});
 
 // Root test
 app.get("/", (req, res) => {
