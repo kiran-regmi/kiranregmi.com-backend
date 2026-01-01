@@ -1,12 +1,12 @@
 [
   {
     "email": "admin@kiranregmi.com",
-    "passwordHash": "$2a$10$THGd37XW1/0zJ3ZVgJg7Ku6sCdLmYUlq6XiftX3B8xVj7zy3NDG8e",
+    "password": "$2b$10$TYx09KMmQFm2PlE1.CCx8uMcJpHq5IgQ8XQDnEvGNhR0VyiWyakEG",
     "role": "admin"
   },
   {
     "email": "user@kiranregmi.com",
-    "passwordHash": "$2a$10$BQybXP8u1sJzsMiU5Q4Q6OtRRfZeW9puOSn73MxnvuKPReJaqoSfC",
+    "password": "$2b$10$dgKiJdF9wps156RblwcDoe.d2r44/EpP/Bju/0ZlcjjTKwz4jq98O",
     "role": "user"
   }
 ]
