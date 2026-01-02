@@ -1,216 +1,217 @@
 [
   {
     "id": 1,
-    "title": "n/a",
+    "title": "SOC Analyst Responsibilities",
     "question": "What is the primary role of a SOC analyst?",
     "answer": "A SOC analyst is responsible for monitoring security alerts, triaging suspicious activity, and escalating confirmed or highly suspicious events. In practice, that means reviewing SIEM alerts, validating whether they are true positives or false positives, gathering context from logs and tools like EDR, and either containing the threat or handing it off to incident response. At a junior level, the focus is on consistent triage, good documentation, and not missing critical alerts.",
     "category": "SOC"
   },
   {
     "id": 2,
-    "title": "n/a",
+    "title": "SIEM Platform Overview",
     "question": "What is a SIEM and why is it important in a SOC?",
     "answer": "A SIEM (Security Information and Event Management) platform collects, aggregates, and correlates logs from multiple systems like firewalls, servers, endpoints, identity platforms, and cloud services. It is critical in a SOC because it provides centralized visibility of security-relevant events and allows analysts to detect patterns that indicate attacks, such as brute force attempts, privilege escalation, or lateral movement. Without a SIEM, detection becomes fragmented and heavily manual.",
     "category": "SOC"
   },
   {
     "id": 3,
-    "title": "n/a",
+    "title": "Alert types and Triage",
     "question": "How do you differentiate a false positive from a true positive alert?",
     "answer": "To differentiate a false positive from a true positive, I start by validating the context around the alert: what user, host, or application is involved, and does the behavior make sense for that entity? I check historical activity, log details, and related telemetry from tools like EDR, firewall, and identity systems. I also look for supporting indicators, such as unusual geolocation, impossible travel, abnormal login times, or known bad IPs/domains. A true positive will typically have multiple indicators aligned with malicious behavior, while a false positive often has a legitimate explanation backed by normal usage patterns.",
     "category": "SOC"
   },
   {
     "id": 4,
-    "title": "n/a",
+    "title": "Indicators of Compromise (IOCs)",
     "question": "What are Indicators of Compromise (IOCs)? Give examples.",
     "answer": "Indicators of Compromise are artifacts that strongly suggest a system or account may have been compromised. Examples include known malicious IP addresses, domains or URLs associated with malware campaigns, file hashes belonging to malware, unusual process execution patterns, persistence mechanisms in the registry or startup folders, and suspicious login patterns such as impossible travel or logins from anonymous VPNs. SOC analysts use IOCs to hunt for related activity and to tune detection rules.",
     "category": "SOC"
   },
   {
     "id": 5,
-    "title": "n/a",
+    "title": "Phishing Alert Triage",
     "question": "Walk me through how you would triage a phishing alert.",
     "answer": "For a phishing alert, I first review the email details: sender address, display name, sending domain reputation, subject, and timestamp. Then I inspect links and attachments in a safe environment, checking for URL obfuscation, credential-harvesting pages, or known malicious payloads. I correlate the alert with identity logs to see if any users clicked the link or entered credentials. If compromise is suspected, I work with IAM to reset credentials, invalidate sessions, and with email admins to quarantine similar messages. Finally, I document the incident, update any detection rules if needed, and share awareness tips with users if appropriate.",
     "category": "SOC"
   },
   {
     "id": 6,
-    "title": "n/a",
+    "title": "MITRE ATT&CK Framework",
     "question": "What is MITRE ATT&CK and how would you use it in a SOC?",
     "answer": "MITRE ATT&CK is a knowledge base that documents adversary tactics, techniques, and procedures across the attack lifecycle. In a SOC, I use it as a reference to map alerts and detections to specific techniques, identify coverage gaps, and design hunts. For example, if we detect suspicious PowerShell usage, I can map it to known MITRE techniques related to execution or defense evasion. This helps with structured analysis, reporting, and building a more complete detection strategy instead of reacting to isolated alerts.",
     "category": "SOC"
   },
   {
     "id": 7,
-    "title": "n/a",
+    "title": "Handling Alert Fatigue",
     "question": "How do you handle alert fatigue in a SOC?",
     "answer": "To reduce alert fatigue, I focus on improving both process and tuning. That includes reviewing noisy rules and working with engineering teams to refine them, combining related alerts into more meaningful correlated events, and setting clear triage runbooks so Tier 1 analysts can work consistently. I also push to prioritize alerts by risk and impact, for example giving more weight to privileged accounts, critical assets, and externally exposed systems. Over time, this reduces noise and ensures human effort is spent where it matters most.",
     "category": "SOC"
   },
   {
     "id": 8,
-    "title": "n/a",
+    "title": "EDR vs Traditional Antivirus",
     "question": "What is the difference between an EDR and traditional antivirus?",
     "answer": "Traditional antivirus mostly relies on signatures and basic heuristics to detect known malware at a point in time. EDR (Endpoint Detection and Response) goes further by continuously monitoring endpoint behavior, capturing process trees, network connections, and persistence mechanisms. EDR tools provide much better visibility and allow analysts to investigate suspicious processes, isolate hosts, and perform remote remediation. In modern SOC operations, EDR is essential for investigating and stopping advanced threats that may not be caught by signature-based AV alone.",
     "category": "SOC"
   },
   {
     "id": 9,
-    "title": "n/a",
+    "title": "Log Retention Value",
     "question": "How would you explain the value of log retention to a non-technical stakeholder?",
     "answer": "I would explain that log retention is like keeping security camera footage for your digital environment. If an incident happens, having historical logs allows us to reconstruct what occurred, who was impacted, and how far the attacker got. Without logs, we are effectively blind and can only guess. Proper log retention supports faster investigations, regulatory and legal requirements, and more accurate communication to leadership and customers after an incident.",
     "category": "SOC"
   },
   {
     "id": 10,
-    "title": "n/a",
+    "title": "Critical Incident Handling",
     "question": "Describe your approach to handling a critical security incident.",
     "answer": "In a critical incident, my approach follows a structured flow: detection, containment, investigation, eradication, and recovery. First, I confirm the incident and contain it quickly—this might include isolating endpoints, disabling accounts, or blocking indicators at the firewall. Then I gather and analyze evidence from logs and tools to understand scope and root cause. Once we know how the attacker got in, we eradicate the threat by removing malware, closing vulnerabilities, or revoking access. Finally, we support recovery and contribute to lessons learned so that controls and detections are improved to prevent similar incidents in the future.",
     "category": "SOC"
   },
   {
     "id": 11,
-    "title": "n/a",
+    "title": "Risk Management Framework (RMF)",
     "question": "What is a Risk Management Framework (RMF) and why is it important?",
     "answer": "A Risk Management Framework is a structured process for identifying, assessing, treating, and monitoring risks to an organization’s objectives, especially around confidentiality, integrity, and availability. Frameworks like NIST RMF or ISO 27005 provide repeatable steps so that risk decisions are not ad hoc. RMF is important because it connects technical issues to business impact, ensures that risks are evaluated consistently, and that mitigation efforts are prioritized where they reduce the most risk for the organization.",
     "category": "GRC"
   },
   {
     "id": 12,
-    "title": "n/a",
+    "title": "Inherent vs Residual Risk",
     "question": "Explain the difference between inherent risk and residual risk.",
     "answer": "Inherent risk is the level of risk that exists before any controls or mitigations are applied. Residual risk is the level of risk that remains after controls and mitigations are implemented. In GRC work, we first assess inherent risk to understand the true exposure, then evaluate how effective existing controls are to determine the residual risk. Leadership then decides whether residual risk is acceptable, needs additional treatment, or should be transferred, for example through insurance or contracts.",
     "category": "GRC"
   },
   {
     "id": 13,
-    "title": "n/a",
+    "title": "Security Controls Overview",
     "question": "What is a security control? Give an example.",
     "answer": "A security control is a safeguard or countermeasure designed to reduce risk by preventing, detecting, or responding to threats. Controls can be technical, administrative, or physical. For example, multi-factor authentication is a technical control that makes account takeover harder. A security awareness training program is an administrative control that reduces phishing risk. Badge access to a data center is a physical control that protects critical infrastructure from unauthorized access.",
     "category": "GRC"
   },
   {
     "id": 14,
-   "title": "n/a",
+    "title": "SOC 2 and Trust Service Criteria",
     "question": "What is SOC 2 and what are the Trust Service Criteria?",
     "answer": "SOC 2 is an attestation report that evaluates how a service organization designs and operates controls related to security, availability, processing integrity, confidentiality, and privacy. The Trust Service Criteria are the categories used in SOC 2. Most organizations start with the Security category as mandatory and then add others based on their business model. From a GRC perspective, SOC 2 provides independent assurance to customers that the company has appropriate controls in place and that they are operating effectively over time.",
     "category": "GRC"
   },
   {
     "id": 15,
-    "title": "n/a",
+    "title": "Information Security Policy Explanation",
     "question": "How would you explain the purpose of an information security policy to a business stakeholder?",
     "answer": "I would explain that an information security policy is a high-level document that sets expectations for how the organization protects its data and systems. It defines responsibilities, acceptable behavior, and key requirements like access control, data handling, and incident reporting. Policies help align everyone—IT, business, and leadership—around the same rules, and they provide a foundation for standards, procedures, and audits. Without clear policies, security decisions become inconsistent and hard to enforce.",
     "category": "GRC"
   },
   {
     "id": 16,
-    "title": "n/a",
+    "title": "Vendor Risk Assessment",
     "question": "What is a vendor risk assessment and why is it needed?",
     "answer": "A vendor risk assessment evaluates the security posture of third parties that store, process, or access the organization’s data or systems. It is needed because outsourcing does not outsource risk; if a vendor is breached, our data and customers can still be impacted. In practice, this involves sending security questionnaires, reviewing certifications like SOC 2 or ISO 27001, evaluating technical controls, and making sure contracts include appropriate security and data protection clauses.",
     "category": "GRC"
   },
   {
     "id": 17,
-    "title": "n/a",
+    "title": "Policy Exception vs Violation",
     "question": "What is the difference between a policy exception and a policy violation?",
     "answer": "A policy violation occurs when someone breaks a policy without approval—for example, storing sensitive data in an unapproved system. A policy exception is a documented and approved deviation from policy, usually granted for a limited time when there is a business need. Exceptions should include a risk assessment, compensating controls, an owner, and an expiration date. Managing exceptions is an important part of GRC because it keeps risk transparent instead of hidden.",
     "category": "GRC"
   },
   {
     "id": 18,
-    "title": "n/a",
+    "title": "Risk Prioritization",
     "question": "How do you prioritize which risks to treat first?",
     "answer": "I prioritize risks based on a combination of likelihood, impact, and alignment to business-critical processes. Typically, I use a risk matrix or scoring model that considers factors like data sensitivity, regulatory impact, financial loss, operational downtime, and reputational damage. High-impact, high-likelihood risks to critical assets or processes are treated first. I also consider dependencies, quick wins with high risk reduction, and any regulatory or contractual obligations that demand specific remediation timelines.",
     "category": "GRC"
   },
   {
     "id": 19,
-    "title": "n/a",
+    "title": "Risk Appetite vs Tolerance",
     "question": "What is risk appetite and how is it different from risk tolerance?",
     "answer": "Risk appetite is the overall amount and type of risk an organization is willing to accept in pursuit of its objectives. It is usually defined by senior leadership or the board. Risk tolerance is the acceptable variation around specific risk metrics or thresholds. For example, an organization might have low appetite for regulatory non-compliance but higher appetite for certain operational risks. In GRC, we use appetite and tolerance to decide whether a given residual risk is acceptable or needs further treatment.",
     "category": "GRC"
   },
   {
     "id": 20,
-    "title": "n/a",
+    "title": "CAPA in Audits",
     "question": "Explain what a CAPA (Corrective and Preventive Action) is in the context of audits.",
     "answer": "A CAPA is a structured response to an audit finding or incident. Corrective Action focuses on fixing the specific issue that was identified, while Preventive Action focuses on addressing the underlying root cause so the issue does not recur. For example, if an access review was missed, the corrective action might be to complete the overdue review, while the preventive action could be to automate reminders and require management sign-off. CAPAs are key for demonstrating continuous improvement to auditors and regulators.",
     "category": "GRC"
   },
   {
     "id": 21,
-    "title": "n/a",
-    "question": "What is Least Privilege in the context of IAM and why is it important?",
-    "answer": "Least Privilege in IAM means granting users, applications, and services only the minimum access necessary to perform their legitimate duties, nothing more. It is important because excess permissions are a major contributor to breach impact and lateral movement. By limiting privileges, we reduce the blast radius if an account is compromised and make it easier to detect abnormal behavior. In practice, this involves role design, periodic access reviews, and removing standing admin access where possible.",
-    "category": "IAM"
+    "title": "Alert types and Triage",
+    "question": "What are the different types of alerts and how do you triage them?",
+    "answer": "Alerts can be categorized as false positives, low severity, medium severity, or high severity. Triage involves assessing the alert's validity, impact, and urgency. I start by verifying the alert source and checking for any known patterns or indicators of compromise (IOCs). Then I evaluate the potential impact on systems or data. High-severity alerts are investigated immediately, while lower ones are queued for review or automated response if they meet certain criteria.",
+    "category": "SOC"
   },
   {
     "id": 22,
-    "title": "n/a",
+    "title": "Authentication vs Authorization",
     "question": "Explain the difference between authentication and authorization.",
     "answer": "Authentication answers the question, “Who are you?” and is about verifying identity—for example, using passwords, MFA, tokens, or certificates. Authorization answers the question, “What are you allowed to do?” and is about determining which resources and actions a verified identity can access. In IAM, strong authentication without proper authorization design still leaves the environment at risk, so both need to be designed and enforced correctly.",
     "category": "IAM"
   },
   {
     "id": 23,
-    "title": "n/a",
+    "title": "Multi-Factor Authentication (MFA)",
+    "question": "What is Multi-Factor Authentication and why is it important?",
     "answer": "Multi-Factor Authentication requires users to provide two or more verification factors, such as something they know (password), something they have (phone or token), or something they are (biometrics). I would prioritize enabling MFA for privileged accounts, remote access, VPN, administrative consoles like cloud and identity providers, and external-facing applications that handle sensitive data. From an IAM and risk perspective, MFA is one of the highest-value controls for reducing account takeover risk.",
     "category": "IAM"
   },
   {
     "id": 24,
-    "title": "n/a",
+    "title": "Single Sign-On (SSO) Explanation",
     "question": "How would you explain SSO (Single Sign-On) to a non-technical audience?",
     "answer": "I would explain that Single Sign-On allows users to log in once with a single set of credentials and then access multiple approved applications without re-entering their password each time. It improves user experience and reduces password fatigue, which also reduces the chance of weak or reused passwords. From a security perspective, SSO centralizes authentication, making it easier to enforce strong controls like MFA and quickly disable access for departing employees.",
     "category": "IAM"
   },
   {
     "id": 25,
-    "title": "n/a",
+    "title": "SAML Explanation",
     "question": "What is SAML and how is it used in IAM?",
     "answer": "SAML (Security Assertion Markup Language) is an XML-based standard used to exchange authentication and authorization data between an identity provider (IdP) and a service provider (SP). In IAM, SAML is commonly used for Single Sign-On into web applications. The user authenticates to the IdP, and the IdP sends a signed SAML assertion to the application indicating that the user is authenticated and optionally including attributes like email or group membership that the application can use for authorization.",
     "category": "IAM"
   },
   {
     "id": 26,
-    "title": "n/a",
+    "title": "RBAC vs ABAC",
     "question": "What is the difference between RBAC and ABAC?",
     "answer": "RBAC (Role-Based Access Control) grants permissions based on assigned roles, such as “HR Analyst” or “Finance Manager,” and is relatively easy to understand and manage at scale. ABAC (Attribute-Based Access Control) bases decisions on attributes of the user, resource, action, and environment, such as department, device type, data classification, or location. ABAC is more flexible and powerful but also more complex. Many organizations start with RBAC and gradually incorporate ABAC-like concepts for fine-grained or high-risk scenarios.",
     "category": "IAM"
   },
   {
     "id": 27,
-    "title": "n/a",
+    "title": "Periodic Access Reviews",
     "question": "Why are periodic access reviews important?",
     "answer": "Periodic access reviews are important to ensure that users still have the right level of access based on their current role and responsibilities. Over time, people change teams, projects end, or temporary access is forgotten, which leads to privilege creep. Regular reviews force managers or data owners to actively confirm or remove access. From a compliance perspective, they are often required by frameworks like SOX, SOC 2, and ISO 27001, and from a security perspective they significantly reduce unnecessary risk.",
     "category": "IAM"
   },
   {
     "id": 28,
-    "title": "n/a",
+    "title": "Zero Trust in IAM",
     "question": "What is Zero Trust in the context of identity and access?",
     "answer": "Zero Trust is a security model that assumes no implicit trust based on network location or device alone. Instead, access decisions are made based on continuous verification of user identity, device health, context, and behavior. In IAM, this means enforcing strong authentication, conditional access policies, least privilege, and ongoing monitoring of user behavior. Rather than trusting someone because they are “on the VPN,” Zero Trust verifies each access request in a granular and context-aware way.",
     "category": "IAM"
   },
   {
     "id": 29,
-    "title": "n/a",    
+    "title": "Joiner, Mover, Leaver (JML) Processes",
     "question": "How would you handle joiner, mover, and leaver (JML) processes in IAM?",
     "answer": "For joiners, I would ensure new users are provisioned with appropriate access based on standardized roles or profiles, with MFA enforced from day one. For movers, access should be adjusted when people change roles—old access removed, new access granted—to avoid privilege creep. For leavers, the process should quickly disable accounts, revoke tokens and VPN access, and remove access from all integrated applications. Automating JML as much as possible via HR and IAM integration reduces mistakes and improves both security and user experience.",
     "category": "IAM"
   },
   {
     "id": 30,
-   "title": "n/a",
+   "title": "Passwordless Authentication",
     "question": "What is passwordless authentication and why are organizations moving toward it?",
     "answer": "Passwordless authentication replaces traditional passwords with stronger and more user-friendly methods like FIDO2 security keys, platform authenticators, biometrics, or secure device-bound credentials. Organizations are moving toward passwordless because passwords are a common root cause of breaches due to phishing, reuse, and weak complexity. Passwordless significantly reduces the attack surface for credential theft while often making the login process faster and smoother for end users.",
     "category": "IAM"
   },
   {
     "id": 31,
-    "title": "n/a",
+    "title": "OWASP Top 10",
     "question": "What are the OWASP Top 10 and why are they important for web application security?",
     "answer": "The OWASP Top 10 is a regularly updated list of the most critical security risks to web applications, published by the Open Web Application Security Project (OWASP). It serves as a foundational resource for developers, security professionals, and organizations to understand and mitigate common vulnerabilities such as injection flaws, broken authentication, and cross-site scripting (XSS). By addressing the OWASP Top 10, organizations can significantly reduce their exposure to common attack vectors and improve overall application security.",
     "category": "CSF"
