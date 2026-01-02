@@ -1,548 +1,549 @@
 [
   {
     "id": 1,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is the primary role of a SOC analyst?",
     "answer": "A SOC analyst is responsible for monitoring security alerts, triaging suspicious activity, and escalating confirmed or highly suspicious events. In practice, that means reviewing SIEM alerts, validating whether they are true positives or false positives, gathering context from logs and tools like EDR, and either containing the threat or handing it off to incident response. At a junior level, the focus is on consistent triage, good documentation, and not missing critical alerts.",
     "category": "SOC"
   },
   {
     "id": 2,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is a SIEM and why is it important in a SOC?",
     "answer": "A SIEM (Security Information and Event Management) platform collects, aggregates, and correlates logs from multiple systems like firewalls, servers, endpoints, identity platforms, and cloud services. It is critical in a SOC because it provides centralized visibility of security-relevant events and allows analysts to detect patterns that indicate attacks, such as brute force attempts, privilege escalation, or lateral movement. Without a SIEM, detection becomes fragmented and heavily manual.",
     "category": "SOC"
   },
   {
     "id": 3,
-    "title":Not/A,
+    "title": "n/a",
     "question": "How do you differentiate a false positive from a true positive alert?",
     "answer": "To differentiate a false positive from a true positive, I start by validating the context around the alert: what user, host, or application is involved, and does the behavior make sense for that entity? I check historical activity, log details, and related telemetry from tools like EDR, firewall, and identity systems. I also look for supporting indicators, such as unusual geolocation, impossible travel, abnormal login times, or known bad IPs/domains. A true positive will typically have multiple indicators aligned with malicious behavior, while a false positive often has a legitimate explanation backed by normal usage patterns.",
     "category": "SOC"
   },
   {
     "id": 4,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What are Indicators of Compromise (IOCs)? Give examples.",
     "answer": "Indicators of Compromise are artifacts that strongly suggest a system or account may have been compromised. Examples include known malicious IP addresses, domains or URLs associated with malware campaigns, file hashes belonging to malware, unusual process execution patterns, persistence mechanisms in the registry or startup folders, and suspicious login patterns such as impossible travel or logins from anonymous VPNs. SOC analysts use IOCs to hunt for related activity and to tune detection rules.",
     "category": "SOC"
   },
   {
     "id": 5,
-    "title":Not/A,
+    "title": "n/a",
     "question": "Walk me through how you would triage a phishing alert.",
     "answer": "For a phishing alert, I first review the email details: sender address, display name, sending domain reputation, subject, and timestamp. Then I inspect links and attachments in a safe environment, checking for URL obfuscation, credential-harvesting pages, or known malicious payloads. I correlate the alert with identity logs to see if any users clicked the link or entered credentials. If compromise is suspected, I work with IAM to reset credentials, invalidate sessions, and with email admins to quarantine similar messages. Finally, I document the incident, update any detection rules if needed, and share awareness tips with users if appropriate.",
     "category": "SOC"
   },
   {
     "id": 6,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is MITRE ATT&CK and how would you use it in a SOC?",
     "answer": "MITRE ATT&CK is a knowledge base that documents adversary tactics, techniques, and procedures across the attack lifecycle. In a SOC, I use it as a reference to map alerts and detections to specific techniques, identify coverage gaps, and design hunts. For example, if we detect suspicious PowerShell usage, I can map it to known MITRE techniques related to execution or defense evasion. This helps with structured analysis, reporting, and building a more complete detection strategy instead of reacting to isolated alerts.",
     "category": "SOC"
   },
   {
     "id": 7,
-    "title":Not/A,
+    "title": "n/a",
     "question": "How do you handle alert fatigue in a SOC?",
     "answer": "To reduce alert fatigue, I focus on improving both process and tuning. That includes reviewing noisy rules and working with engineering teams to refine them, combining related alerts into more meaningful correlated events, and setting clear triage runbooks so Tier 1 analysts can work consistently. I also push to prioritize alerts by risk and impact, for example giving more weight to privileged accounts, critical assets, and externally exposed systems. Over time, this reduces noise and ensures human effort is spent where it matters most.",
     "category": "SOC"
   },
   {
     "id": 8,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is the difference between an EDR and traditional antivirus?",
     "answer": "Traditional antivirus mostly relies on signatures and basic heuristics to detect known malware at a point in time. EDR (Endpoint Detection and Response) goes further by continuously monitoring endpoint behavior, capturing process trees, network connections, and persistence mechanisms. EDR tools provide much better visibility and allow analysts to investigate suspicious processes, isolate hosts, and perform remote remediation. In modern SOC operations, EDR is essential for investigating and stopping advanced threats that may not be caught by signature-based AV alone.",
     "category": "SOC"
   },
   {
     "id": 9,
-    "title":Not/A,
+    "title": "n/a",
     "question": "How would you explain the value of log retention to a non-technical stakeholder?",
     "answer": "I would explain that log retention is like keeping security camera footage for your digital environment. If an incident happens, having historical logs allows us to reconstruct what occurred, who was impacted, and how far the attacker got. Without logs, we are effectively blind and can only guess. Proper log retention supports faster investigations, regulatory and legal requirements, and more accurate communication to leadership and customers after an incident.",
     "category": "SOC"
   },
   {
     "id": 10,
-    "title":Not/A,
+    "title": "n/a",
     "question": "Describe your approach to handling a critical security incident.",
     "answer": "In a critical incident, my approach follows a structured flow: detection, containment, investigation, eradication, and recovery. First, I confirm the incident and contain it quickly—this might include isolating endpoints, disabling accounts, or blocking indicators at the firewall. Then I gather and analyze evidence from logs and tools to understand scope and root cause. Once we know how the attacker got in, we eradicate the threat by removing malware, closing vulnerabilities, or revoking access. Finally, we support recovery and contribute to lessons learned so that controls and detections are improved to prevent similar incidents in the future.",
     "category": "SOC"
   },
   {
     "id": 11,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is a Risk Management Framework (RMF) and why is it important?",
     "answer": "A Risk Management Framework is a structured process for identifying, assessing, treating, and monitoring risks to an organization’s objectives, especially around confidentiality, integrity, and availability. Frameworks like NIST RMF or ISO 27005 provide repeatable steps so that risk decisions are not ad hoc. RMF is important because it connects technical issues to business impact, ensures that risks are evaluated consistently, and that mitigation efforts are prioritized where they reduce the most risk for the organization.",
     "category": "GRC"
   },
   {
     "id": 12,
-    "title":Not/A,
+    "title": "n/a",
     "question": "Explain the difference between inherent risk and residual risk.",
     "answer": "Inherent risk is the level of risk that exists before any controls or mitigations are applied. Residual risk is the level of risk that remains after controls and mitigations are implemented. In GRC work, we first assess inherent risk to understand the true exposure, then evaluate how effective existing controls are to determine the residual risk. Leadership then decides whether residual risk is acceptable, needs additional treatment, or should be transferred, for example through insurance or contracts.",
     "category": "GRC"
   },
   {
     "id": 13,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is a security control? Give an example.",
     "answer": "A security control is a safeguard or countermeasure designed to reduce risk by preventing, detecting, or responding to threats. Controls can be technical, administrative, or physical. For example, multi-factor authentication is a technical control that makes account takeover harder. A security awareness training program is an administrative control that reduces phishing risk. Badge access to a data center is a physical control that protects critical infrastructure from unauthorized access.",
     "category": "GRC"
   },
   {
     "id": 14,
-   "title":Not/A,
+   "title": "n/a",
     "question": "What is SOC 2 and what are the Trust Service Criteria?",
     "answer": "SOC 2 is an attestation report that evaluates how a service organization designs and operates controls related to security, availability, processing integrity, confidentiality, and privacy. The Trust Service Criteria are the categories used in SOC 2. Most organizations start with the Security category as mandatory and then add others based on their business model. From a GRC perspective, SOC 2 provides independent assurance to customers that the company has appropriate controls in place and that they are operating effectively over time.",
     "category": "GRC"
   },
   {
     "id": 15,
-    "title":Not/A,
+    "title": "n/a",
     "question": "How would you explain the purpose of an information security policy to a business stakeholder?",
     "answer": "I would explain that an information security policy is a high-level document that sets expectations for how the organization protects its data and systems. It defines responsibilities, acceptable behavior, and key requirements like access control, data handling, and incident reporting. Policies help align everyone—IT, business, and leadership—around the same rules, and they provide a foundation for standards, procedures, and audits. Without clear policies, security decisions become inconsistent and hard to enforce.",
     "category": "GRC"
   },
   {
     "id": 16,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is a vendor risk assessment and why is it needed?",
     "answer": "A vendor risk assessment evaluates the security posture of third parties that store, process, or access the organization’s data or systems. It is needed because outsourcing does not outsource risk; if a vendor is breached, our data and customers can still be impacted. In practice, this involves sending security questionnaires, reviewing certifications like SOC 2 or ISO 27001, evaluating technical controls, and making sure contracts include appropriate security and data protection clauses.",
     "category": "GRC"
   },
   {
     "id": 17,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is the difference between a policy exception and a policy violation?",
     "answer": "A policy violation occurs when someone breaks a policy without approval—for example, storing sensitive data in an unapproved system. A policy exception is a documented and approved deviation from policy, usually granted for a limited time when there is a business need. Exceptions should include a risk assessment, compensating controls, an owner, and an expiration date. Managing exceptions is an important part of GRC because it keeps risk transparent instead of hidden.",
     "category": "GRC"
   },
   {
     "id": 18,
-    "title":Not/A,
+    "title": "n/a",
     "question": "How do you prioritize which risks to treat first?",
     "answer": "I prioritize risks based on a combination of likelihood, impact, and alignment to business-critical processes. Typically, I use a risk matrix or scoring model that considers factors like data sensitivity, regulatory impact, financial loss, operational downtime, and reputational damage. High-impact, high-likelihood risks to critical assets or processes are treated first. I also consider dependencies, quick wins with high risk reduction, and any regulatory or contractual obligations that demand specific remediation timelines.",
     "category": "GRC"
   },
   {
     "id": 19,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is risk appetite and how is it different from risk tolerance?",
     "answer": "Risk appetite is the overall amount and type of risk an organization is willing to accept in pursuit of its objectives. It is usually defined by senior leadership or the board. Risk tolerance is the acceptable variation around specific risk metrics or thresholds. For example, an organization might have low appetite for regulatory non-compliance but higher appetite for certain operational risks. In GRC, we use appetite and tolerance to decide whether a given residual risk is acceptable or needs further treatment.",
     "category": "GRC"
   },
   {
     "id": 20,
-    "title":Not/A,
+    "title": "n/a",
     "question": "Explain what a CAPA (Corrective and Preventive Action) is in the context of audits.",
     "answer": "A CAPA is a structured response to an audit finding or incident. Corrective Action focuses on fixing the specific issue that was identified, while Preventive Action focuses on addressing the underlying root cause so the issue does not recur. For example, if an access review was missed, the corrective action might be to complete the overdue review, while the preventive action could be to automate reminders and require management sign-off. CAPAs are key for demonstrating continuous improvement to auditors and regulators.",
     "category": "GRC"
   },
   {
     "id": 21,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is Least Privilege in the context of IAM and why is it important?",
     "answer": "Least Privilege in IAM means granting users, applications, and services only the minimum access necessary to perform their legitimate duties, nothing more. It is important because excess permissions are a major contributor to breach impact and lateral movement. By limiting privileges, we reduce the blast radius if an account is compromised and make it easier to detect abnormal behavior. In practice, this involves role design, periodic access reviews, and removing standing admin access where possible.",
     "category": "IAM"
   },
   {
     "id": 22,
-    "title":Not/A,
+    "title": "n/a",
     "question": "Explain the difference between authentication and authorization.",
     "answer": "Authentication answers the question, “Who are you?” and is about verifying identity—for example, using passwords, MFA, tokens, or certificates. Authorization answers the question, “What are you allowed to do?” and is about determining which resources and actions a verified identity can access. In IAM, strong authentication without proper authorization design still leaves the environment at risk, so both need to be designed and enforced correctly.",
     "category": "IAM"
   },
   {
     "id": 23,
-    "title":Not/A,
+    "title": "n/a",
     "answer": "Multi-Factor Authentication requires users to provide two or more verification factors, such as something they know (password), something they have (phone or token), or something they are (biometrics). I would prioritize enabling MFA for privileged accounts, remote access, VPN, administrative consoles like cloud and identity providers, and external-facing applications that handle sensitive data. From an IAM and risk perspective, MFA is one of the highest-value controls for reducing account takeover risk.",
     "category": "IAM"
   },
   {
     "id": 24,
-    "title":Not/A,
+    "title": "n/a",
     "question": "How would you explain SSO (Single Sign-On) to a non-technical audience?",
     "answer": "I would explain that Single Sign-On allows users to log in once with a single set of credentials and then access multiple approved applications without re-entering their password each time. It improves user experience and reduces password fatigue, which also reduces the chance of weak or reused passwords. From a security perspective, SSO centralizes authentication, making it easier to enforce strong controls like MFA and quickly disable access for departing employees.",
     "category": "IAM"
   },
   {
     "id": 25,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is SAML and how is it used in IAM?",
     "answer": "SAML (Security Assertion Markup Language) is an XML-based standard used to exchange authentication and authorization data between an identity provider (IdP) and a service provider (SP). In IAM, SAML is commonly used for Single Sign-On into web applications. The user authenticates to the IdP, and the IdP sends a signed SAML assertion to the application indicating that the user is authenticated and optionally including attributes like email or group membership that the application can use for authorization.",
     "category": "IAM"
   },
   {
     "id": 26,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What is the difference between RBAC and ABAC?",
     "answer": "RBAC (Role-Based Access Control) grants permissions based on assigned roles, such as “HR Analyst” or “Finance Manager,” and is relatively easy to understand and manage at scale. ABAC (Attribute-Based Access Control) bases decisions on attributes of the user, resource, action, and environment, such as department, device type, data classification, or location. ABAC is more flexible and powerful but also more complex. Many organizations start with RBAC and gradually incorporate ABAC-like concepts for fine-grained or high-risk scenarios.",
     "category": "IAM"
   },
   {
     "id": 27,
-    "title":Not/A,
+    "title": "n/a",
     "question": "Why are periodic access reviews important?",
     "answer": "Periodic access reviews are important to ensure that users still have the right level of access based on their current role and responsibilities. Over time, people change teams, projects end, or temporary access is forgotten, which leads to privilege creep. Regular reviews force managers or data owners to actively confirm or remove access. From a compliance perspective, they are often required by frameworks like SOX, SOC 2, and ISO 27001, and from a security perspective they significantly reduce unnecessary risk.",
     "category": "IAM"
   },
   {
     "id": 28,
+    "title": "n/a",
     "question": "What is Zero Trust in the context of identity and access?",
     "answer": "Zero Trust is a security model that assumes no implicit trust based on network location or device alone. Instead, access decisions are made based on continuous verification of user identity, device health, context, and behavior. In IAM, this means enforcing strong authentication, conditional access policies, least privilege, and ongoing monitoring of user behavior. Rather than trusting someone because they are “on the VPN,” Zero Trust verifies each access request in a granular and context-aware way.",
     "category": "IAM"
   },
   {
     "id": 29,
-    "title":Not/A,
+    "title": "n/a",    
     "question": "How would you handle joiner, mover, and leaver (JML) processes in IAM?",
     "answer": "For joiners, I would ensure new users are provisioned with appropriate access based on standardized roles or profiles, with MFA enforced from day one. For movers, access should be adjusted when people change roles—old access removed, new access granted—to avoid privilege creep. For leavers, the process should quickly disable accounts, revoke tokens and VPN access, and remove access from all integrated applications. Automating JML as much as possible via HR and IAM integration reduces mistakes and improves both security and user experience.",
     "category": "IAM"
   },
   {
     "id": 30,
-    "title":Not/A,
+   "title": "n/a",
     "question": "What is passwordless authentication and why are organizations moving toward it?",
     "answer": "Passwordless authentication replaces traditional passwords with stronger and more user-friendly methods like FIDO2 security keys, platform authenticators, biometrics, or secure device-bound credentials. Organizations are moving toward passwordless because passwords are a common root cause of breaches due to phishing, reuse, and weak complexity. Passwordless significantly reduces the attack surface for credential theft while often making the login process faster and smoother for end users.",
     "category": "IAM"
   },
   {
     "id": 31,
-    "title":Not/A,
+    "title": "n/a",
     "question": "What are the OWASP Top 10 and why are they important for web application security?",
     "answer": "The OWASP Top 10 is a regularly updated list of the most critical security risks to web applications, published by the Open Web Application Security Project (OWASP). It serves as a foundational resource for developers, security professionals, and organizations to understand and mitigate common vulnerabilities such as injection flaws, broken authentication, and cross-site scripting (XSS). By addressing the OWASP Top 10, organizations can significantly reduce their exposure to common attack vectors and improve overall application security.",
     "category": "CSF"
-  }
+  },
   {
   "id": 32,
-  "title": CIA Triad,
+  "title": "CIA Triad",
   "question": "What is the CIA Triad and why is it important in cybersecurity?",
   "answer": "The CIA Triad stands for Confidentiality, Integrity, and Availability. It is a foundational cybersecurity model used to guide security policies and controls. Confidentiality ensures that information is accessible only to authorized users, integrity ensures data is accurate and not improperly modified, and availability ensures systems and data are accessible when needed. Most security controls can be mapped back to one or more components of the CIA Triad, making it a core framework for designing and evaluating security programs.",
   "category": "CSF"
-}
+},
 {
   "id": 33,
-  "title":Risk vs Threat vs Vulnerability,
+  "title": "Risk vs Threat vs Vulnerability",
   "question": "What is the difference between risk, threat, and vulnerability?",
   "answer": "A threat is a potential cause of an unwanted incident, such as a hacker or malware. A vulnerability is a weakness that could be exploited by a threat, such as an unpatched system. Risk is the likelihood that a threat will exploit a vulnerability and the impact if it occurs. In simple terms, threats exploit vulnerabilities, and risk measures the potential damage and probability of that exploitation.",
   "category": "CSF"
-}
+},
 {
   "id": 34,
-  "title":Least Privilege,
+  "title": "Least Privilege",
   "question": "What is the principle of least privilege and why is it important?",
   "answer": "The principle of least privilege means granting users, systems, or applications only the minimum level of access required to perform their job functions. This reduces the attack surface and limits the potential damage if an account is compromised. Least privilege is critical for preventing privilege abuse, containing breaches, and supporting compliance requirements.",
   "category": "CSF"
-}
+},
 {
   "id": 35,
-  "title":Defense in Depth,
+  "title": "Defense in Depth",
   "question": "What is defense in depth in cybersecurity?",
   "answer": "Defense in depth is a security strategy that uses multiple layers of controls to protect systems and data. Instead of relying on a single security measure, organizations implement administrative, technical, and physical controls at different levels. If one control fails, additional layers help prevent or detect an attack, reducing the overall risk.",
   "category": "CSF"
-}
+},
 {
   "id": 36,
-  "title":Authentication vs Authorization,
+  "title": "Authentication vs Authorization",
   "question": "What is the difference between authentication and authorization?",
   "answer": "Authentication is the process of verifying a user's identity, such as through passwords, MFA, or biometrics. Authorization determines what an authenticated user is allowed to access or do. In simple terms, authentication answers 'Who are you?' while authorization answers 'What are you allowed to do?'",
   "category": "CSF"
-}
+},
 {
   "id": 37,
-  "title":Encryption vs Hashing,
+  "title": "Encryption vs Hashing",
   "question": "What is the difference between encryption and hashing?",
   "answer": "Encryption is a reversible process used to protect data confidentiality by transforming data using a key, which can later be decrypted. Hashing is a one-way process that converts data into a fixed-length value and cannot be reversed. Hashing is commonly used for password storage and data integrity, while encryption is used to protect data in transit or at rest.",
   "category": "CSF"
-}
+},
 {
   "id": 38,
-  "title":Security vs Compliance,
+  "title": "Security vs Compliance",
   "question": "What is the difference between security and compliance?",
   "answer": "Security focuses on protecting systems, data, and users from threats, while compliance focuses on meeting regulatory or policy requirements. Being compliant does not always mean an organization is secure, as compliance standards often represent a minimum baseline. Strong security programs go beyond compliance by addressing real-world risks and threats.",
   "category": "CSF"
-}
+},
 {
   "id": 39,
-  "title":Preventive, Detective, and Corrective Security Controls,
+  "title": "Preventive, Detective, and Corrective Security Controls",
   "question": "What is the difference between preventive, detective, and corrective security controls?",
   "answer": "Preventive controls are designed to stop security incidents before they occur, such as firewalls and access controls. Detective controls identify incidents after they happen, such as logging, monitoring, and intrusion detection systems. Corrective controls are used to fix issues after detection, such as patching systems or restoring from backups. Effective security programs use all three types together.",
   "category": "CSF"
-}
+},
 {
   "id": 40,
-  "title":Encryption at Rest vs In Transit,
+  "title": "Encryption at Rest vs In Transit",
   "question": "What is the difference between encryption at rest and encryption in transit?",
   "answer": "Encryption at rest protects stored data, such as data on disks or databases, from unauthorized access. Encryption in transit protects data as it moves between systems, such as over the network using TLS. Both are important because data can be compromised either while stored or while being transmitted.",
   "category": "CSF"
-}
+},
 {
   "id": 41,
-  "title":Symmetric vs Asymmetric Encryption,
+  "title": "Symmetric vs Asymmetric Encryption",
   "question": "What is the difference between symmetric and asymmetric encryption?",
   "answer": "Symmetric encryption uses the same key for both encryption and decryption, making it fast and efficient for large amounts of data. Asymmetric encryption uses a public and private key pair, which improves secure key exchange but is slower. In practice, many systems use a combination of both, such as TLS.",
   "category": "CSF"
-}
+},
 {
   "id": 42,
-  "title":Zero Trust (foundation understanding)
+  "title": "Zero Trust (foundation understanding)",
   "question": "What is Zero Trust and why is it important?",
   "answer": "Zero Trust is a security model based on the principle of 'never trust, always verify.' It assumes that threats can exist both inside and outside the network, so access decisions are continuously validated based on identity, device posture, and context. Zero Trust reduces the impact of breaches by limiting implicit trust.",
   "category": "CSF"
-}
+},
 {
   "id": 43,
-  "title":Likelihood vs Impact,
+  "title": "Likelihood vs Impact",
   "question": "What is the difference between likelihood and impact in risk management?",
   "answer": "Likelihood refers to the probability that a risk event will occur, while impact refers to the potential damage or consequence if it does occur. Risk is typically evaluated by considering both likelihood and impact together, helping organizations prioritize which risks need the most attention.",
   "category": "CSF"
-}
+},
 {
   "id": 44,
-  "title":Authentication Factors,
+  "title": "Authentication Factors",
   "question": "What are the different authentication factors?",
   "answer": "Authentication factors are commonly grouped into something you know (passwords or PINs), something you have (tokens or smart cards), and something you are (biometrics). Multi-factor authentication combines two or more of these factors to improve security.",
   "category": "CSF"
-}
+},
 {
   "id": 45,
-  "title":Principle Separation of Duties,
+  "title": "Principle Separation of Duties",
   "question": "What is separation of duties and why is it important?",
   "answer": "Separation of duties is a security principle that ensures no single individual has control over all aspects of a critical process. This reduces the risk of fraud, errors, and abuse by requiring multiple people to complete sensitive actions. It is especially important in financial, administrative, and security operations.",
   "category": "CSF"
-}
+},
 {
   "id": 46,
-  "title":Defense vs Detection vs Response,
+  "title": "Defense vs Detection vs Response",
   "question": "Why is detection and response just as important as prevention in cybersecurity?",
   "answer": "No preventive control is perfect, so organizations must assume breaches will happen. Detection allows teams to identify suspicious activity quickly, while response enables them to contain and remediate incidents. Strong detection and response capabilities reduce dwell time and limit damage.",
   "category": "CSF"
-}
+},
 {
   "id": 47,
-  "title":Data Classification,
+  "title": "Data Classification",
   "question": "What is data classification and why is it important?",
   "answer": "Data classification involves categorizing data based on its sensitivity and importance, such as public, internal, confidential, or restricted. It helps organizations apply appropriate security controls and ensure sensitive data receives stronger protection.",
   "category": "CSF"
-}
+},
 {
   "id": 48,
-  "title":Security vs Privacy,
+  "title": "Security vs Privacy",
   "question": "What is the difference between security and privacy?",
   "answer": "Security focuses on protecting data and systems from unauthorized access and threats, while privacy focuses on how personal data is collected, used, and shared. Strong security supports privacy, but privacy also includes legal and ethical considerations beyond technical controls.",
   "category": "CSF"
-}
+},
 {
   "id": 49,
-  "title":Risk Acceptance vs Mitigation vs Treatment,
+  "title": "Risk Acceptance vs Mitigation vs Treatment",
   "question": "What are common ways organizations handle risk?",
   "answer": "Organizations typically handle risk through mitigation, acceptance, transfer, or avoidance. Mitigation reduces the risk through controls, acceptance acknowledges the risk without action, transfer shifts risk to another party such as through insurance, and avoidance eliminates the risk entirely by changing processes.",
   "category": "CSF"
-}
+},
 {
   "id": 50,
-  "title":Explaining Security to Non-Technical "Stakeholders"
+  "title": "Explaining Security to Non-Technical Stakeholders",
   "question": "How would you explain cybersecurity risk to a non-technical executive?",
   "answer": "I would focus on business impact rather than technical details, such as financial loss, operational disruption, or reputational damage. Using clear examples and risk-based language helps executives understand why security investments are necessary and how they support business goals.",
   "category": "CSF"
-}
+},
 {
   "id": 51,
   "title": "Alert Triage",
   "question": "How do you approach triaging a security alert in a SOC?",
   "answer": "I start by validating whether the alert is legitimate or a false positive by reviewing the alert details, source, timestamp, and affected assets. I then assess severity based on potential impact and scope. If the alert is confirmed, I gather supporting evidence, document findings, and follow escalation procedures based on our playbooks.",
   "category": "SOCINT"
-}
+},
 {
   "id": 52,
   "title": "False Positives",
   "question": "How do you handle false positives in a SOC environment?",
   "answer": "When I identify a false positive, I document why it occurred and verify that no malicious activity is present. If false positives are recurring, I collaborate with senior analysts to fine-tune detection rules or update baselines. Reducing false positives is important so analysts can focus on real threats without missing critical alerts.",
   "category": "SOCINT"
-}
+},
 {
   "id": 53,
   "title": "Severity Assessment",
   "question": "How do you determine the severity of a security incident?",
   "answer": "I evaluate severity by considering the affected system, type of threat, potential business impact, and whether sensitive data or critical assets are involved. I also look at indicators such as lateral movement or persistence. Based on these factors, I classify the incident according to our severity guidelines and escalate if required.",
   "category": "SOCINT"
-}
+},
 {
   "id": 54,
   "title": "Escalation Process",
   "question": "When would you escalate an incident to a higher-level analyst?",
   "answer": "I escalate an incident when it exceeds my scope, involves confirmed malicious activity, impacts critical systems, or requires containment actions. Escalation ensures faster response and reduces risk, and I always include clear documentation so the next analyst has full context.",
   "category": "SOCINT"
-}
+},
 {
   "id": 55,
   "title": "SIEM Investigation",
   "question": "How do you use a SIEM during an investigation?",
   "answer": "I use the SIEM to correlate logs from multiple sources, identify patterns, and build a timeline of events. I look for anomalies such as unusual login activity, failed authentication attempts, or unexpected network connections. The SIEM helps me confirm whether an alert is isolated or part of a broader incident.",
   "category": "SOCINT"
-}
+},
 {
   "id": 56,
   "title": "Incident Documentation",
   "question": "Why is documentation important during incident response?",
   "answer": "Documentation ensures incidents are handled consistently and provides a clear record for audits, reporting, and lessons learned. I document actions taken, evidence collected, and decisions made so incidents can be reviewed and improved upon in the future.",
   "category": "SOCINT"
-}
+},
 {
   "id": 57,
   "title": "Incident Communication",
   "question": "How do you communicate during a security incident?",
   "answer": "I communicate clearly and concisely using established channels, focusing on facts rather than assumptions. I provide timely updates to stakeholders while avoiding unnecessary technical jargon. Good communication ensures alignment and prevents confusion during high-pressure situations.",
   "category": "SOCINT"
-}
+},
 {
   "id": 58,
   "title": "Indicators of Compromise",
   "question": "What are indicators of compromise and how do you use them?",
   "answer": "Indicators of compromise are signs that a system may have been breached, such as malicious IPs, unusual processes, or suspicious file hashes. I use IOCs to search logs and endpoints to identify affected systems and determine whether an incident is contained or spreading.",
   "category": "SOCINT"
-}
+},
 {
   "id": 59,
   "title": "Containment vs Eradication",
   "question": "What is the difference between containment and eradication in incident response?",
   "answer": "Containment focuses on limiting the spread and impact of an incident, such as isolating affected systems. Eradication involves removing the root cause, like malware or compromised accounts. I prioritize containment first to reduce damage, then move to eradication once the threat is controlled.",
   "category": "SOCINT"
-}
+},
 {
   "id": 60,
   "title": "Lessons Learned",
   "question": "Why are lessons learned important after an incident?",
   "answer": "Lessons learned help identify gaps in detection, response, or processes. I review what worked well and what didn’t so controls and playbooks can be improved. This continuous improvement reduces the likelihood and impact of future incidents.",
   "category": "SOCINT"
-}
+},
 {
   "id": 61,
   "title": "Risk Assessment",
   "question": "How do you approach conducting a risk assessment?",
   "answer": "I start by identifying assets and understanding their business importance. Then I identify threats and vulnerabilities associated with those assets and evaluate the likelihood and potential impact. Based on this, I help prioritize risks so the organization can focus on the most critical ones first.",
   "category": "GRCINT"
-}
+},
 {
   "id": 62,
   "title": "Control Effectiveness",
   "question": "How do you determine whether a security control is effective?",
   "answer": "I evaluate whether the control is designed appropriately and whether it is operating as intended. This can include reviewing evidence, testing the control, and checking if it actually reduces the identified risk. If a control exists but doesn’t meaningfully reduce risk, it may need improvement.",
   "category": "GRCINT"
-}
+},
 {
   "id": 63,
   "title": "Risk Acceptance",
   "question": "When is it appropriate for an organization to accept risk?",
   "answer": "Risk can be accepted when the cost of mitigation outweighs the potential impact, or when the risk aligns with the organization’s risk appetite. I make sure accepted risks are formally documented, approved by the appropriate stakeholders, and reviewed periodically.",
   "category": "GRCINT"
-}
+},
 {
   "id": 64,
   "title": "Audit Findings",
   "question": "How do you handle audit findings or control gaps?",
   "answer": "I review the finding to understand the root cause and associated risk. Then I work with stakeholders to define remediation actions, timelines, and ownership. Clear documentation and follow-up are important to ensure the issue is addressed and doesn’t reoccur.",
   "category": "GRCINT"
-}
+},
 {
   "id": 65,
   "title": "Policies vs Procedures",
   "question": "What is the difference between a policy and a procedure?",
   "answer": "A policy defines high-level expectations and rules, while a procedure provides step-by-step instructions on how to implement those rules. In GRC, policies set direction, and procedures ensure consistent execution across the organization.",
   "category": "GRCINT"
-}
+},
 {
   "id": 66,
   "title": "Stakeholder Communication",
   "question": "How do you communicate risk to non-technical stakeholders?",
   "answer": "I focus on business impact rather than technical details, such as financial loss, compliance impact, or operational disruption. Using clear language and real-world examples helps stakeholders understand why a risk matters and supports informed decision-making.",
   "category": "GRCINT"
-}
+},
 {
   "id": 67,
   "title": "Compliance vs Risk",
   "question": "How do you explain the difference between compliance and risk management?",
   "answer": "Compliance focuses on meeting specific regulatory or framework requirements, while risk management focuses on identifying and reducing actual threats to the organization. I explain that compliance is important, but it represents a baseline, not a guarantee of security.",
   "category": "GRCINT"
-}
+},
 {
   "id": 68,
   "title": "Risk Register",
   "question": "What is a risk register and how is it used?",
   "answer": "A risk register is a centralized record of identified risks, including their likelihood, impact, and mitigation status. I use it to track risk ownership, monitor changes over time, and ensure accountability for risk treatment decisions.",
   "category": "GRCINT"
-}
+},
 {
   "id": 69,
   "title": "Continuous Risk Management",
   "question": "Why is risk management considered a continuous process?",
   "answer": "Threats, technologies, and business priorities constantly change, so risks must be reviewed regularly. Continuous risk management ensures controls remain effective and new risks are identified before they become major issues.",
   "category": "GRCINT"
-}
+},
 {
   "id": 70,
   "title": "SOC Analyst Responsibilities",
   "question": "What are the primary responsibilities of a SOC analyst?",
   "answer": "A SOC analyst is responsible for monitoring security alerts, investigating suspicious activity, responding to incidents, and escalating issues when necessary. They also document findings, follow incident response procedures, and contribute to improving detection and response processes.",
   "category": "SOC"
-}
+},
 {
   "id": 71,
   "title": "Alert Fatigue",
   "question": "What is alert fatigue and why is it a problem in a SOC?",
   "answer": "Alert fatigue occurs when analysts are overwhelmed by a high volume of alerts, many of which may be false positives. This can lead to missed critical alerts, slower response times, and analyst burnout. Reducing alert fatigue improves efficiency and security outcomes.",
   "category": "SOC"
-}
+},
 {
   "id": 72,
   "title": "Incident Playbooks",
   "question": "What are incident response playbooks and why are they important?",
   "answer": "Incident response playbooks are predefined procedures that guide analysts on how to handle specific types of incidents. They ensure consistent response, reduce errors, and help junior analysts respond effectively under pressure.",
   "category": "SOC"
-}
+},
 {
   "id": 73,
   "title": "Shift Handover",
   "question": "Why is shift handover important in a 24/7 SOC environment?",
   "answer": "Shift handover ensures continuity of monitoring and investigations between analyst teams. Clear documentation and communication prevent incidents from being missed or duplicated and ensure ongoing investigations are properly tracked.",
   "category": "SOC"
-}
+},
 {
   "id": 74,
   "title": "MTTD and MTTR",
   "question": "What are MTTD and MTTR and why do they matter?",
   "answer": "MTTD, or Mean Time to Detect, measures how quickly a security incident is identified. MTTR, or Mean Time to Respond, measures how quickly the incident is contained or resolved. These metrics help organizations evaluate the effectiveness of their security operations.",
   "category": "SOC"
-}
+},
 {
   "id": 75,
   "title": "Log Sources",
   "question": "What types of log sources are commonly monitored in a SOC?",
   "answer": "Common log sources include firewalls, endpoint protection tools, servers, authentication systems, network devices, and cloud platforms. Monitoring multiple log sources helps provide better visibility and context during investigations.",
   "category": "SOC"
-}
+},
 {
   "id": 76,
   "title": "Incident Classification",
   "question": "How are security incidents typically classified in a SOC?",
   "answer": "Incidents are usually classified based on severity, impact, and type, such as malware, phishing, or unauthorized access. Classification helps prioritize response efforts and ensures the appropriate resources are assigned.",
   "category": "SOC"
-}
+},
 {
   "id": 77,
   "title": "Threat Intelligence",
   "question": "How is threat intelligence used in a SOC?",
   "answer": "Threat intelligence provides context about attackers, tactics, and indicators of compromise. SOCs use it to improve detection, validate alerts, and better understand emerging threats.",
   "category": "SOC"
-}
+},
 {
   "id": 78,
   "title": "Incident Lifecycle",
   "question": "What are the typical stages of the incident response lifecycle?",
   "answer": "The incident response lifecycle typically includes preparation, detection, analysis, containment, eradication, recovery, and lessons learned. Following a structured lifecycle helps organizations respond effectively and continuously improve their security posture.",
   "category": "SOC"
-}
+},
 {
   "id": 79,
   "title": "SOC Continuous Improvement",
@@ -550,4 +551,3 @@
   "answer": "SOC teams improve by reviewing incidents, refining detection rules, updating playbooks, training analysts, and tracking performance metrics. Continuous improvement ensures the SOC adapts to evolving threats and operational challenges.",
   "category": "SOC"
 }
-
