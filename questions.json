@@ -178,5 +178,11 @@
     "question": "What is passwordless authentication and why are organizations moving toward it?",
     "answer": "Passwordless authentication replaces traditional passwords with stronger and more user-friendly methods like FIDO2 security keys, platform authenticators, biometrics, or secure device-bound credentials. Organizations are moving toward passwordless because passwords are a common root cause of breaches due to phishing, reuse, and weak complexity. Passwordless significantly reduces the attack surface for credential theft while often making the login process faster and smoother for end users.",
     "category": "IAM"
+  },
+  {
+    "id": 31,
+    "question": "What are the OWASP Top 10 and why are they important for web application security?",
+    "answer": "The OWASP Top 10 is a regularly updated list of the most critical security risks to web applications, published by the Open Web Application Security Project (OWASP). It serves as a foundational resource for developers, security professionals, and organizations to understand and mitigate common vulnerabilities such as injection flaws, broken authentication, and cross-site scripting (XSS). By addressing the OWASP Top 10, organizations can significantly reduce their exposure to common attack vectors and improve overall application security.",
+    "category": "CSF"
   }
-]
+  
