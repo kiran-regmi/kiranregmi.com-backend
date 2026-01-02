@@ -185,4 +185,321 @@
     "answer": "The OWASP Top 10 is a regularly updated list of the most critical security risks to web applications, published by the Open Web Application Security Project (OWASP). It serves as a foundational resource for developers, security professionals, and organizations to understand and mitigate common vulnerabilities such as injection flaws, broken authentication, and cross-site scripting (XSS). By addressing the OWASP Top 10, organizations can significantly reduce their exposure to common attack vectors and improve overall application security.",
     "category": "CSF"
   }
-  
+  {
+  "id": 32,
+  "question": "What is the CIA Triad and why is it important in cybersecurity?",
+  "answer": "The CIA Triad stands for Confidentiality, Integrity, and Availability. It is a foundational cybersecurity model used to guide security policies and controls. Confidentiality ensures that information is accessible only to authorized users, integrity ensures data is accurate and not improperly modified, and availability ensures systems and data are accessible when needed. Most security controls can be mapped back to one or more components of the CIA Triad, making it a core framework for designing and evaluating security programs.",
+  "category": "CSF"
+}
+{
+  "id": 33,
+  "question": "What is the difference between risk, threat, and vulnerability?",
+  "answer": "A threat is a potential cause of an unwanted incident, such as a hacker or malware. A vulnerability is a weakness that could be exploited by a threat, such as an unpatched system. Risk is the likelihood that a threat will exploit a vulnerability and the impact if it occurs. In simple terms, threats exploit vulnerabilities, and risk measures the potential damage and probability of that exploitation.",
+  "category": "CSF"
+}
+{
+  "id": 34,
+  "question": "What is the principle of least privilege and why is it important?",
+  "answer": "The principle of least privilege means granting users, systems, or applications only the minimum level of access required to perform their job functions. This reduces the attack surface and limits the potential damage if an account is compromised. Least privilege is critical for preventing privilege abuse, containing breaches, and supporting compliance requirements.",
+  "category": "CSF"
+}
+{
+  "id": 35,
+  "question": "What is defense in depth in cybersecurity?",
+  "answer": "Defense in depth is a security strategy that uses multiple layers of controls to protect systems and data. Instead of relying on a single security measure, organizations implement administrative, technical, and physical controls at different levels. If one control fails, additional layers help prevent or detect an attack, reducing the overall risk.",
+  "category": "CSF"
+}
+{
+  "id": 36,
+  "question": "What is the difference between authentication and authorization?",
+  "answer": "Authentication is the process of verifying a user's identity, such as through passwords, MFA, or biometrics. Authorization determines what an authenticated user is allowed to access or do. In simple terms, authentication answers 'Who are you?' while authorization answers 'What are you allowed to do?'",
+  "category": "CSF"
+}
+{
+  "id": 37,
+  "question": "What is the difference between encryption and hashing?",
+  "answer": "Encryption is a reversible process used to protect data confidentiality by transforming data using a key, which can later be decrypted. Hashing is a one-way process that converts data into a fixed-length value and cannot be reversed. Hashing is commonly used for password storage and data integrity, while encryption is used to protect data in transit or at rest.",
+  "category": "CSF"
+}
+{
+  "id": 38,
+  "question": "What is the difference between security and compliance?",
+  "answer": "Security focuses on protecting systems, data, and users from threats, while compliance focuses on meeting regulatory or policy requirements. Being compliant does not always mean an organization is secure, as compliance standards often represent a minimum baseline. Strong security programs go beyond compliance by addressing real-world risks and threats.",
+  "category": "CSF"
+}
+{
+  "id": 39,
+  "question": "What is the difference between preventive, detective, and corrective security controls?",
+  "answer": "Preventive controls are designed to stop security incidents before they occur, such as firewalls and access controls. Detective controls identify incidents after they happen, such as logging, monitoring, and intrusion detection systems. Corrective controls are used to fix issues after detection, such as patching systems or restoring from backups. Effective security programs use all three types together.",
+  "category": "CSF"
+}
+{
+  "id": 40,
+  "question": "What is the difference between encryption at rest and encryption in transit?",
+  "answer": "Encryption at rest protects stored data, such as data on disks or databases, from unauthorized access. Encryption in transit protects data as it moves between systems, such as over the network using TLS. Both are important because data can be compromised either while stored or while being transmitted.",
+  "category": "CSF"
+}
+{
+  "id": 41,
+  "question": "What is the difference between symmetric and asymmetric encryption?",
+  "answer": "Symmetric encryption uses the same key for both encryption and decryption, making it fast and efficient for large amounts of data. Asymmetric encryption uses a public and private key pair, which improves secure key exchange but is slower. In practice, many systems use a combination of both, such as TLS.",
+  "category": "CSF"
+}
+{
+  "id": 42,
+  "question": "What is Zero Trust and why is it important?",
+  "answer": "Zero Trust is a security model based on the principle of 'never trust, always verify.' It assumes that threats can exist both inside and outside the network, so access decisions are continuously validated based on identity, device posture, and context. Zero Trust reduces the impact of breaches by limiting implicit trust.",
+  "category": "CSF"
+}
+{
+  "id": 43,
+  "question": "What is the difference between likelihood and impact in risk management?",
+  "answer": "Likelihood refers to the probability that a risk event will occur, while impact refers to the potential damage or consequence if it does occur. Risk is typically evaluated by considering both likelihood and impact together, helping organizations prioritize which risks need the most attention.",
+  "category": "CSF"
+}
+{
+  "id": 44,
+  "question": "What are the different authentication factors?",
+  "answer": "Authentication factors are commonly grouped into something you know (passwords or PINs), something you have (tokens or smart cards), and something you are (biometrics). Multi-factor authentication combines two or more of these factors to improve security.",
+  "category": "CSF"
+}
+{
+  "id": 45,
+  "question": "What is separation of duties and why is it important?",
+  "answer": "Separation of duties is a security principle that ensures no single individual has control over all aspects of a critical process. This reduces the risk of fraud, errors, and abuse by requiring multiple people to complete sensitive actions. It is especially important in financial, administrative, and security operations.",
+  "category": "CSF"
+}
+{
+  "id": 46,
+  "question": "Why is detection and response just as important as prevention in cybersecurity?",
+  "answer": "No preventive control is perfect, so organizations must assume breaches will happen. Detection allows teams to identify suspicious activity quickly, while response enables them to contain and remediate incidents. Strong detection and response capabilities reduce dwell time and limit damage.",
+  "category": "CSF"
+}
+{
+  "id": 47,
+  "question": "What is data classification and why is it important?",
+  "answer": "Data classification involves categorizing data based on its sensitivity and importance, such as public, internal, confidential, or restricted. It helps organizations apply appropriate security controls and ensure sensitive data receives stronger protection.",
+  "category": "CSF"
+}
+{
+  "id": 48,
+  "question": "What is the difference between security and privacy?",
+  "answer": "Security focuses on protecting data and systems from unauthorized access and threats, while privacy focuses on how personal data is collected, used, and shared. Strong security supports privacy, but privacy also includes legal and ethical considerations beyond technical controls.",
+  "category": "CSF"
+}
+{
+  "id": 49,
+  "question": "What are common ways organizations handle risk?",
+  "answer": "Organizations typically handle risk through mitigation, acceptance, transfer, or avoidance. Mitigation reduces the risk through controls, acceptance acknowledges the risk without action, transfer shifts risk to another party such as through insurance, and avoidance eliminates the risk entirely by changing processes.",
+  "category": "CSF"
+}
+{
+  "id": 50,
+  "question": "How would you explain cybersecurity risk to a non-technical executive?",
+  "answer": "I would focus on business impact rather than technical details, such as financial loss, operational disruption, or reputational damage. Using clear examples and risk-based language helps executives understand why security investments are necessary and how they support business goals.",
+  "category": "CSF"
+}
+{
+  "id": 51,
+  "title": "Alert Triage",
+  "question": "How do you approach triaging a security alert in a SOC?",
+  "answer": "I start by validating whether the alert is legitimate or a false positive by reviewing the alert details, source, timestamp, and affected assets. I then assess severity based on potential impact and scope. If the alert is confirmed, I gather supporting evidence, document findings, and follow escalation procedures based on our playbooks.",
+  "category": "SOCINT"
+}
+{
+  "id": 52,
+  "title": "False Positives",
+  "question": "How do you handle false positives in a SOC environment?",
+  "answer": "When I identify a false positive, I document why it occurred and verify that no malicious activity is present. If false positives are recurring, I collaborate with senior analysts to fine-tune detection rules or update baselines. Reducing false positives is important so analysts can focus on real threats without missing critical alerts.",
+  "category": "SOCINT"
+}
+{
+  "id": 53,
+  "title": "Severity Assessment",
+  "question": "How do you determine the severity of a security incident?",
+  "answer": "I evaluate severity by considering the affected system, type of threat, potential business impact, and whether sensitive data or critical assets are involved. I also look at indicators such as lateral movement or persistence. Based on these factors, I classify the incident according to our severity guidelines and escalate if required.",
+  "category": "SOCINT"
+}
+{
+  "id": 54,
+  "title": "Escalation Process",
+  "question": "When would you escalate an incident to a higher-level analyst?",
+  "answer": "I escalate an incident when it exceeds my scope, involves confirmed malicious activity, impacts critical systems, or requires containment actions. Escalation ensures faster response and reduces risk, and I always include clear documentation so the next analyst has full context.",
+  "category": "SOCINT"
+}
+{
+  "id": 55,
+  "title": "SIEM Investigation",
+  "question": "How do you use a SIEM during an investigation?",
+  "answer": "I use the SIEM to correlate logs from multiple sources, identify patterns, and build a timeline of events. I look for anomalies such as unusual login activity, failed authentication attempts, or unexpected network connections. The SIEM helps me confirm whether an alert is isolated or part of a broader incident.",
+  "category": "SOCINT"
+}
+{
+  "id": 56,
+  "title": "Incident Documentation",
+  "question": "Why is documentation important during incident response?",
+  "answer": "Documentation ensures incidents are handled consistently and provides a clear record for audits, reporting, and lessons learned. I document actions taken, evidence collected, and decisions made so incidents can be reviewed and improved upon in the future.",
+  "category": "SOCINT"
+}
+{
+  "id": 57,
+  "title": "Incident Communication",
+  "question": "How do you communicate during a security incident?",
+  "answer": "I communicate clearly and concisely using established channels, focusing on facts rather than assumptions. I provide timely updates to stakeholders while avoiding unnecessary technical jargon. Good communication ensures alignment and prevents confusion during high-pressure situations.",
+  "category": "SOCINT"
+}
+{
+  "id": 58,
+  "title": "Indicators of Compromise",
+  "question": "What are indicators of compromise and how do you use them?",
+  "answer": "Indicators of compromise are signs that a system may have been breached, such as malicious IPs, unusual processes, or suspicious file hashes. I use IOCs to search logs and endpoints to identify affected systems and determine whether an incident is contained or spreading.",
+  "category": "SOCINT"
+}
+{
+  "id": 59,
+  "title": "Containment vs Eradication",
+  "question": "What is the difference between containment and eradication in incident response?",
+  "answer": "Containment focuses on limiting the spread and impact of an incident, such as isolating affected systems. Eradication involves removing the root cause, like malware or compromised accounts. I prioritize containment first to reduce damage, then move to eradication once the threat is controlled.",
+  "category": "SOCINT"
+}
+{
+  "id": 60,
+  "title": "Lessons Learned",
+  "question": "Why are lessons learned important after an incident?",
+  "answer": "Lessons learned help identify gaps in detection, response, or processes. I review what worked well and what didn’t so controls and playbooks can be improved. This continuous improvement reduces the likelihood and impact of future incidents.",
+  "category": "SOCINT"
+}
+{
+  "id": 61,
+  "title": "Risk Assessment",
+  "question": "How do you approach conducting a risk assessment?",
+  "answer": "I start by identifying assets and understanding their business importance. Then I identify threats and vulnerabilities associated with those assets and evaluate the likelihood and potential impact. Based on this, I help prioritize risks so the organization can focus on the most critical ones first.",
+  "category": "GRCINT"
+}
+{
+  "id": 62,
+  "title": "Control Effectiveness",
+  "question": "How do you determine whether a security control is effective?",
+  "answer": "I evaluate whether the control is designed appropriately and whether it is operating as intended. This can include reviewing evidence, testing the control, and checking if it actually reduces the identified risk. If a control exists but doesn’t meaningfully reduce risk, it may need improvement.",
+  "category": "GRCINT"
+}
+{
+  "id": 63,
+  "title": "Risk Acceptance",
+  "question": "When is it appropriate for an organization to accept risk?",
+  "answer": "Risk can be accepted when the cost of mitigation outweighs the potential impact, or when the risk aligns with the organization’s risk appetite. I make sure accepted risks are formally documented, approved by the appropriate stakeholders, and reviewed periodically.",
+  "category": "GRCINT"
+}
+{
+  "id": 64,
+  "title": "Audit Findings",
+  "question": "How do you handle audit findings or control gaps?",
+  "answer": "I review the finding to understand the root cause and associated risk. Then I work with stakeholders to define remediation actions, timelines, and ownership. Clear documentation and follow-up are important to ensure the issue is addressed and doesn’t reoccur.",
+  "category": "GRCINT"
+}
+{
+  "id": 65,
+  "title": "Policies vs Procedures",
+  "question": "What is the difference between a policy and a procedure?",
+  "answer": "A policy defines high-level expectations and rules, while a procedure provides step-by-step instructions on how to implement those rules. In GRC, policies set direction, and procedures ensure consistent execution across the organization.",
+  "category": "GRCINT"
+}
+{
+  "id": 66,
+  "title": "Stakeholder Communication",
+  "question": "How do you communicate risk to non-technical stakeholders?",
+  "answer": "I focus on business impact rather than technical details, such as financial loss, compliance impact, or operational disruption. Using clear language and real-world examples helps stakeholders understand why a risk matters and supports informed decision-making.",
+  "category": "GRCINT"
+}
+{
+  "id": 67,
+  "title": "Compliance vs Risk",
+  "question": "How do you explain the difference between compliance and risk management?",
+  "answer": "Compliance focuses on meeting specific regulatory or framework requirements, while risk management focuses on identifying and reducing actual threats to the organization. I explain that compliance is important, but it represents a baseline, not a guarantee of security.",
+  "category": "GRCINT"
+}
+{
+  "id": 68,
+  "title": "Risk Register",
+  "question": "What is a risk register and how is it used?",
+  "answer": "A risk register is a centralized record of identified risks, including their likelihood, impact, and mitigation status. I use it to track risk ownership, monitor changes over time, and ensure accountability for risk treatment decisions.",
+  "category": "GRCINT"
+}
+{
+  "id": 69,
+  "title": "Continuous Risk Management",
+  "question": "Why is risk management considered a continuous process?",
+  "answer": "Threats, technologies, and business priorities constantly change, so risks must be reviewed regularly. Continuous risk management ensures controls remain effective and new risks are identified before they become major issues.",
+  "category": "GRCINT"
+}
+{
+  "id": 70,
+  "title": "SOC Analyst Responsibilities",
+  "question": "What are the primary responsibilities of a SOC analyst?",
+  "answer": "A SOC analyst is responsible for monitoring security alerts, investigating suspicious activity, responding to incidents, and escalating issues when necessary. They also document findings, follow incident response procedures, and contribute to improving detection and response processes.",
+  "category": "SOC"
+}
+{
+  "id": 71,
+  "title": "Alert Fatigue",
+  "question": "What is alert fatigue and why is it a problem in a SOC?",
+  "answer": "Alert fatigue occurs when analysts are overwhelmed by a high volume of alerts, many of which may be false positives. This can lead to missed critical alerts, slower response times, and analyst burnout. Reducing alert fatigue improves efficiency and security outcomes.",
+  "category": "SOC"
+}
+{
+  "id": 72,
+  "title": "Incident Playbooks",
+  "question": "What are incident response playbooks and why are they important?",
+  "answer": "Incident response playbooks are predefined procedures that guide analysts on how to handle specific types of incidents. They ensure consistent response, reduce errors, and help junior analysts respond effectively under pressure.",
+  "category": "SOC"
+}
+{
+  "id": 73,
+  "title": "Shift Handover",
+  "question": "Why is shift handover important in a 24/7 SOC environment?",
+  "answer": "Shift handover ensures continuity of monitoring and investigations between analyst teams. Clear documentation and communication prevent incidents from being missed or duplicated and ensure ongoing investigations are properly tracked.",
+  "category": "SOC"
+}
+{
+  "id": 74,
+  "title": "MTTD and MTTR",
+  "question": "What are MTTD and MTTR and why do they matter?",
+  "answer": "MTTD, or Mean Time to Detect, measures how quickly a security incident is identified. MTTR, or Mean Time to Respond, measures how quickly the incident is contained or resolved. These metrics help organizations evaluate the effectiveness of their security operations.",
+  "category": "SOC"
+}
+{
+  "id": 75,
+  "title": "Log Sources",
+  "question": "What types of log sources are commonly monitored in a SOC?",
+  "answer": "Common log sources include firewalls, endpoint protection tools, servers, authentication systems, network devices, and cloud platforms. Monitoring multiple log sources helps provide better visibility and context during investigations.",
+  "category": "SOC"
+}
+{
+  "id": 76,
+  "title": "Incident Classification",
+  "question": "How are security incidents typically classified in a SOC?",
+  "answer": "Incidents are usually classified based on severity, impact, and type, such as malware, phishing, or unauthorized access. Classification helps prioritize response efforts and ensures the appropriate resources are assigned.",
+  "category": "SOC"
+}
+{
+  "id": 77,
+  "title": "Threat Intelligence",
+  "question": "How is threat intelligence used in a SOC?",
+  "answer": "Threat intelligence provides context about attackers, tactics, and indicators of compromise. SOCs use it to improve detection, validate alerts, and better understand emerging threats.",
+  "category": "SOC"
+}
+{
+  "id": 78,
+  "title": "Incident Lifecycle",
+  "question": "What are the typical stages of the incident response lifecycle?",
+  "answer": "The incident response lifecycle typically includes preparation, detection, analysis, containment, eradication, recovery, and lessons learned. Following a structured lifecycle helps organizations respond effectively and continuously improve their security posture.",
+  "category": "SOC"
+}
+{
+  "id": 79,
+  "title": "SOC Continuous Improvement",
+  "question": "How do SOC teams continuously improve their operations?",
+  "answer": "SOC teams improve by reviewing incidents, refining detection rules, updating playbooks, training analysts, and tracking performance metrics. Continuous improvement ensures the SOC adapts to evolving threats and operational challenges.",
+  "category": "SOC"
+}
+
