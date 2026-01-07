@@ -1,12 +1,26 @@
 [
   {
     "email": "admin@kiranregmi.com",
-    "passwordHash": "$2a$10$b4o5gCvrXIbt4qZtoga.LORT78wHs9JPXHzBVhQsNUx4yZP5tzi2C",
+    "passwordHash": "$2a$10$4Sb3RBDy21wJAtqUthWjhejLMamonMnprDUKW6B9aMBlq7QGcWuEq",
     "role": "admin"
   },
   {
-    "email": "user@kiranregmi.com",
-    "passwordHash": "$2a$10$a1Jp1YxDyZOCXsHdqcX65e19B8kOeQ7p3IwcbFxIxnQVbe004wOLO",
-    "role": "user"
+      "email": "user@kiranregmi.com",
+      "passwordHash": "$2a$10$6PIqxfzrmFg8ypejBenvoenm/oFsXf94Nb5HHeYBcVvhq9Tyao.VW",
+      "role": "user"
+  },
+  {
+    "email": "test@kiranregmi.com",
+    "passwordHash": "$2a$10$oDpFjSYZS0FQ1vT.oYMlM.xC1Jk7zIX1svVg.oAFWTmsvjyxD8XnG",
+    "role": "test"
   }
 ]
+
+// 
+        Admin: <code>admin@kiranregmi.com / Admin@123</code><br />
+        User: <code>user@kiranregmi.com / User@123</code><br />
+        Test: <code>test@kiranregmi.com / Test@123</code> --
+        old password hashes:
+        $2a$10$b4o5gCvrXIbt4qZtoga.LORT78wHs9JPXHzBVhQsNUx4yZP5tzi2C - admin
+        $2a$10$a1Jp1YxDyZOCXsHdqcX65e19B8kOeQ7p3IwcbFxIxnQVbe004wOLO - user
+//

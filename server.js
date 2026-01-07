@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import cors from "cors";
 import { fileURLToPath } from "url";
 
+const ADMIN_ACCESS_EXPIRED = true;
 const app = express();
 const PORT = process.env.PORT || 10000;
 const JWT_SECRET = "super_secret_key_change_later!!!";

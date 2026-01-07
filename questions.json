@@ -1,4 +1,5 @@
-// questions.json - list of questions, answers, and categories
+
+// questions.json - list of questions, answers, and categories//
 
 [
   {
@@ -553,5 +554,12 @@
   "question": "How do SOC teams continuously improve their operations?",
   "answer": "SOC teams improve by reviewing incidents, refining detection rules, updating playbooks, training analysts, and tracking performance metrics. Continuous improvement ensures the SOC adapts to evolving threats and operational challenges.",
   "category": "SOC"
-}
+},
+{
+  "id": 80,
+  "title": "Patch Management vs Vulnerability Management",
+  "question": "What is the difference between patch management and vulnerability management?",
+  "answer": "Patch management is the process of applying security updates or patches to systems, while vulnerability management is the broader process of identifying, assessing, and mitigating vulnerabilities in an organization's infrastructure.",
+  "category": "SOCINT"
+},
 ]
