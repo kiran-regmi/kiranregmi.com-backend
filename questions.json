@@ -1,6 +1,4 @@
 
-// questions.json - list of questions, answers, and categories//
-
 [
   {
     "id": 1,
@@ -561,5 +559,5 @@
   "question": "What is the difference between patch management and vulnerability management?",
   "answer": "Patch management is the process of applying security updates or patches to systems, while vulnerability management is the broader process of identifying, assessing, and mitigating vulnerabilities in an organization's infrastructure.",
   "category": "SOCINT"
-},
+}
 ]
