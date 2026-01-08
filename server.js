@@ -109,6 +109,7 @@ app.post("/api/login", async (req, res) => {
 
 // ✨ QUESTIONS API — now actually protected
 // test user get 403 | admin and user get 200
+
 app.get(
   "/api/questions",
   authenticateToken,
@@ -121,6 +122,24 @@ app.get(
       res.json({ success: true, questions });
     } catch (err) {
       res.status(500).json({ message: "Server error loading questions" });
+    }
+  }
+);
+
+
+  // You could do role-based filtering here later if you want:
+app.get(
+  "/api/secure-doc/:name",
+  authenticateToken,
+  requireRole(["admin"]), // 🔐 ONLY admin
+  async (req, res) => {
+    try {
+      const safeName = path.basename(req.params.name);
+      const filePath = path.join(__dirname, "assets/pdf", safeName);
+
+      res.sendFile(filePath);
+    } catch (err) {
+      res.status(404).json({ message: "File not found" });
     }
   }
 );
@@ -148,11 +167,6 @@ app.get(
       success: true,
       questions
     });
-  } catch (err) {
-    console.error("Error loading questions:", err);
-    res.status(500).json({ success: false, message: "Server error loading questions" });
-  }
-});
 
 // Root test
 app.get("/", (req, res) => {
