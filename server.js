@@ -163,11 +163,6 @@ app.get(
 
     // const role = req.user.role; // "admin" or "user"
 
-    res.json({
-      success: true,
-      questions
-    });
-
 // Root test
 app.get("/", (req, res) => {
   res.send("Backend is running successfully 🚀");
