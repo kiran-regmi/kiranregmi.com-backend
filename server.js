@@ -23,7 +23,7 @@ const PROJECTS_FILE = path.join(__dirname, "projects.json");
 
 // Middleware
 app.use(cors({
-  origin: "https://www.kiranregmi.com",
+  origin: ["https://www.kiranregmi.com", "https://kiranregmi.com"],
   methods: ["GET", "POST"],
   credentials: true
 }));
