@@ -21,10 +21,21 @@ const USERS_FILE = path.join(__dirname, "users.json");
 const QUESTIONS_FILE = path.join(__dirname, "questions.json");
 const PROJECTS_FILE = path.join(__dirname, "projects.json");
 
-// Middleware
+// CORS config - Middleware
 app.use(cors({
-  origin: ["https://www.kiranregmi.com", "https://kiranregmi.com"],
-  methods: ["GET", "POST"],
+  origin: (origin, callback) => {
+    const allowed = [
+      "https://kiranregmi.com",
+      "https://www.kiranregmi.com",
+      "https://kiranregmi.vercel.app"
+    ];
+
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS blocked"));
+    }
+  },
   credentials: true
 }));
 
