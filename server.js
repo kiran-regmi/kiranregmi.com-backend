@@ -41,7 +41,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// --- JWT auth middleware ---
+// --- JWT authenticateToken middleware ---
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -60,6 +60,23 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
+//Add a Role Guard - RBAC enforcement 
+function requireRole(allowedRoles = []) {
+  return (req, res, next) => {
+    const { role } = req.user;
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(403).json({
+        message: "Access denied: insufficient privileges"
+      });
+    }
+
+    next();
+  };
+}
+
+
 
 // ✨ LOGIN ROUTE
 app.post("/api/login", async (req, res) => {
@@ -91,7 +108,13 @@ app.post("/api/login", async (req, res) => {
 });
 
 // ✨ QUESTIONS API — now actually protected
-app.get("/api/questions", authenticateToken, async (req, res) => {
+// test user get 403 | admin and user get 200
+app.get(
+  "/api/questions",
+  authenticateToken,
+  requireRole(["admin", "user"]),
+  async (req, res) => {
+
   try {
     const data = await fs.readFile(QUESTIONS_FILE, "utf-8");
     const questions = JSON.parse(data);
