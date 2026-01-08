@@ -107,8 +107,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// ✨ QUESTIONS API — now actually protected
-// test user get 403 | admin and user get 200
+// ✨ QUESTIONS API — test user get 403 | admin and user get 200
 
 app.get(
   "/api/questions",
