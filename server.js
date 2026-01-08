@@ -110,7 +110,7 @@ app.post("/api/login", async (req, res) => {
 // ✨ QUESTIONS API — now actually protected
 // test user get 403 | admin and user get 200
 app.get(
-  "/api/questions",
+  "/api/questions", 
   authenticateToken,
   requireRole(["admin", "user"]),
   async (req, res) => {
@@ -119,7 +119,24 @@ app.get(
     const data = await fs.readFile(QUESTIONS_FILE, "utf-8");
     const questions = JSON.parse(data);
 
-    // You could do role-based filtering here later if you want:
+  // You could do role-based filtering here later if you want:
+app.get(
+  "/api/secure-doc/:name",
+  authenticateToken,
+  requireRole(["admin"]), // 🔐 ONLY admin
+  async (req, res) => {
+    try {
+      const safeName = path.basename(req.params.name);
+      const filePath = path.join(__dirname, "assets/pdf", safeName);
+
+      res.sendFile(filePath);
+    } catch (err) {
+      res.status(404).json({ message: "File not found" });
+    }
+  }
+);
+
+
     // const role = req.user.role; // "admin" or "user"
 
     res.json({
