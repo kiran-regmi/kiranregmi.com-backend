@@ -76,6 +76,14 @@ function requireRole(allowedRoles = []) {
   };
 }
 
+// Kid-safe API guard (future use)
+function requireKidOrAdmin(req, res, next) {
+  const { role } = req.user;
+  if (role !== "kid" && role !== "admin") {
+    return res.status(403).json({ message: "Kid access only" });
+  }
+  next();
+}
 
 
 // ✨ LOGIN ROUTE

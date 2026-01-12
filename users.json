@@ -13,5 +13,16 @@
     "email": "test@kiranregmi.com",
     "passwordHash": "$2a$10$oDpFjSYZS0FQ1vT.oYMlM.xC1Jk7zIX1svVg.oAFWTmsvjyxD8XnG",
     "role": "test"
-  }
+  },
+  {
+  "email": "kid@kiranregmi.com",
+  "passwordHash": "$2b$10$kSSjWGgKmjFFvaxfUBTNEeXnvuMz00E9A6xr0gkSlHLFPW4U5mfdu",
+  "role": "kid"
+},
+{
+  "email": "adult@kiranregmi.com",
+  "passwordHash": "2b$10$w2l3P0wH2z9wRr6wH1Xw3u5c1V7mHq1o1kJpE7sZQzHn7vQX1C9vK",
+  "role": "adult"
+}
+
 ]
