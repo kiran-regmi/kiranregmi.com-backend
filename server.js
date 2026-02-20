@@ -1,181 +1,112 @@
 // server.js
-import express from "express";
-import fs from "fs/promises";
-import path from "path";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import cors from "cors";
-import { fileURLToPath } from "url";
+// ─────────────────────────────────────────────────────────────
+//  kiranregmi-backend — Main entry point
+//  Version: 2.0 | February 2026
+//
+//  Stack: Node.js · Express · JWT · bcryptjs · SQLite (audit)
+//  Hosted: Render.com
+// ─────────────────────────────────────────────────────────────
 
-const ADMIN_ACCESS_EXPIRED = true;
+import express  from "express";
+import cors     from "cors";
+import helmet   from "helmet";
+
+import { config }      from "./config/config.js";
+import { apiLimiter }  from "./middleware/rateLimiter.js";
+
+// ── Routes ──
+import authRoutes     from "./routes/authRoutes.js";
+import questionRoutes from "./routes/questionRoutes.js";
+import docRoutes      from "./routes/docRoutes.js";
+import adminRoutes    from "./routes/adminRoutes.js";
+
 const app = express();
-const PORT = process.env.PORT || 10000;
-const JWT_SECRET = "super_secret_key_change_later!!!";
 
-// Fix __dirname in ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// ─────────────────────────────────────────
+//  SECURITY MIDDLEWARE
+// ─────────────────────────────────────────
 
-// JSON Files located in SAME folder as server.js
-const USERS_FILE = path.join(__dirname, "users.json");
-const QUESTIONS_FILE = path.join(__dirname, "questions.json");
-const PROJECTS_FILE = path.join(__dirname, "projects.json");
+// Helmet — sets secure HTTP headers (CSP, HSTS, X-Frame-Options, etc.)
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc:  ["'self'", "https://cdn.tailwindcss.com", "https://cdnjs.cloudflare.com"],
+      styleSrc:   ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+      fontSrc:    ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+      imgSrc:     ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://kiranregmi-backend.onrender.com"],
+    }
+  }
+}));
 
-// CORS config - Middleware
+// CORS — only allow kiranregmi.com origins
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = [
-      "https://kiranregmi.com",
-      "https://www.kiranregmi.com",
-      "https://kiranregmi.vercel.app"
-    ];
-
-    if (!origin || allowed.includes(origin)) {
+    if (!origin || config.allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("CORS blocked"));
+      callback(new Error(`CORS blocked: ${origin}`));
     }
   },
   credentials: true
 }));
 
-app.use(express.json());
+// Parse JSON bodies
+app.use(express.json({ limit: "10kb" })); // 10kb limit prevents large payload attacks
 
-// --- JWT authenticateToken middleware ---
+// General API rate limit
+app.use("/api", apiLimiter);
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+// ─────────────────────────────────────────
+//  ROUTES
+// ─────────────────────────────────────────
 
-  if (!token) {
-    return res.status(401).json({ message: "Missing auth token" });
-  }
+app.use("/api",               authRoutes);      // POST /api/login, /api/logout
+app.use("/api/questions",     questionRoutes);  // GET  /api/questions
+app.use("/api/secure-doc",    docRoutes);       // GET  /api/secure-doc/:name
+app.use("/api/admin",         adminRoutes);     // GET  /api/admin/logs, /api/admin/stats
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error("JWT verify error:", err);
-      return res.status(403).json({ message: "Invalid or expired token" });
-    }
-    req.user = user; // { email, role, iat, exp }
-    next();
-  });
-}
+// ─────────────────────────────────────────
+//  HEALTH CHECK
+// ─────────────────────────────────────────
 
-//Add a Role Guard - RBAC enforcement 
-function requireRole(allowedRoles = []) {
-  return (req, res, next) => {
-    const { role } = req.user;
-
-    if (!allowedRoles.includes(role)) {
-      return res.status(403).json({
-        message: "Access denied: insufficient privileges"
-      });
-    }
-
-    next();
-  };
-}
-
-// Kid-safe API guard (future use)
-function requireKidOrAdmin(req, res, next) {
-  const { role } = req.user;
-  if (role !== "kid" && role !== "admin") {
-    return res.status(403).json({ message: "Kid access only" });
-  }
-  next();
-}
-
-
-// ✨ LOGIN ROUTE
-app.post("/api/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const users = JSON.parse(await fs.readFile(USERS_FILE, "utf-8"));
-    const user = users.find(u => u.email === email);
-
-    if (!user) return res.status(401).json({ message: "Invalid user" });
-
-    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid password" });
-    }
-
-    const token = jwt.sign(
-      { email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "2h" }
-    );
-
-    res.json({ token, role: user.role });
-
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: "Server error during login" });
-  }
-});
-
-// ✨ QUESTIONS API — test user get 403 | admin and user get 200
-
-app.get(
-  "/api/questions",
-  authenticateToken,
-  requireRole(["admin", "user"]),
-  async (req, res) => {
-    try {
-      const data = await fs.readFile(QUESTIONS_FILE, "utf-8");
-      const questions = JSON.parse(data);
-
-      res.json({ success: true, questions });
-    } catch (err) {
-      res.status(500).json({ message: "Server error loading questions" });
-    }
-  }
-);
-
-
-  // You could do role-based filtering here later if you want:
-app.get(
-  "/api/secure-doc/:name",
-  authenticateToken,
-  requireRole(["admin"]), // 🔐 ONLY admin
-  async (req, res) => {
-    try {
-      const safeName = path.basename(req.params.name);
-      const filePath = path.join(__dirname, "assets/pdf", safeName);
-
-      res.sendFile(filePath);
-    } catch (err) {
-      res.status(404).json({ message: "File not found" });
-    }
-  }
-);
-
-// 🔐 SECURE DOC API — ADMIN ONLY
-app.get(
-  "/api/secure-doc/:name",
-  authenticateToken,
-  requireRole(["admin"]),
-  async (req, res) => {
-    try {
-      const safeName = path.basename(req.params.name);
-      const filePath = path.join(__dirname, "assets/pdf", safeName);
-
-      res.sendFile(filePath);
-    } catch {
-      res.status(404).json({ message: "File not found" });
-    }
-  }
-);
-
-    // const role = req.user.role; // "admin" or "user"
-
-// Root test
 app.get("/", (req, res) => {
-  res.send("Backend is running successfully 🚀");
+  res.json({
+    status:  "ok",
+    service: "kiranregmi-backend",
+    version: "2.0",
+    env:     config.nodeEnv,
+  });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+app.get("/health", (req, res) => {
+  res.json({ status: "healthy", timestamp: new Date().toISOString() });
+});
+
+// ─────────────────────────────────────────
+//  404 & ERROR HANDLERS
+// ─────────────────────────────────────────
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// Global error handler — never expose stack traces in production
+app.use((err, req, res, next) => {
+  console.error("[ERROR]", err.message);
+  res.status(err.status || 500).json({
+    message: config.isDev ? err.message : "Internal server error"
+  });
+});
+
+// ─────────────────────────────────────────
+//  START
+// ─────────────────────────────────────────
+
+app.listen(config.port, () => {
+  console.log(`✅ kiranregmi-backend v2.0 running on port ${config.port}`);
+  console.log(`🌍 Environment: ${config.nodeEnv}`);
+  console.log(`🔐 Audit logging: SQLite @ db/audit.db`);
 });
