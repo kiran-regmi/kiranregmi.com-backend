@@ -7,7 +7,7 @@
 
 import express from "express";
 import { authenticateToken, requireRole } from "../middleware/auth.js";
-import { getLogs, getStats, auditLog, EVENT } from "../db/auditLogger.js";
+import { getLogs, getStats } from "../db/auditLogger.js";
 
 const router = express.Router();
 
@@ -34,15 +34,6 @@ router.get("/logs", (req, res) => {
       outcome:    outcome    || undefined,
       suspicious: suspicious !== undefined ? suspicious === "true" : undefined,
       search:     search     || undefined,
-    });
-
-    auditLog({
-      event_type: EVENT.ADMIN_ACTION,
-      outcome:    "success",
-      req,
-      user_email: req.user.email,
-      user_role:  req.user.role,
-      metadata:   { action: "view_audit_logs", filters: req.query },
     });
 
     res.json(result);
