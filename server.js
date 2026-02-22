@@ -37,7 +37,7 @@ app.use(helmet({
       styleSrc:   ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
       fontSrc:    ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       imgSrc:     ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://kiranregmi-backend.onrender.com"],
+      connectSrc: ["'self'", "https://kiranregmi-com-backend.onrender.com"],
     }
   }
 }));
@@ -55,7 +55,6 @@ app.use(cors({
 }));
 
 // Parse JSON bodies
-app.use("/api/cloudflare", cloudflareRoutes);  // GET /api/cloudflare/events, /stats
 app.use(express.json({ limit: "10kb" })); // 10kb limit prevents large payload attacks
 
 // General API rate limit
