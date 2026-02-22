@@ -2,27 +2,31 @@
   {
     "email": "admin@kiranregmi.com",
     "passwordHash": "$2a$10$4Sb3RBDy21wJAtqUthWjhejLMamonMnprDUKW6B9aMBlq7QGcWuEq",
-    "role": "admin"
+    "role": "admin",
+    "permissions": ["soc-mastery", "7dayai", "job-tracker", "appointments", "kids", "ai-mastery", "ai-agent"]
   },
   {
-      "email": "user@kiranregmi.com",
-      "passwordHash": "$2a$10$6PIqxfzrmFg8ypejBenvoenm/oFsXf94Nb5HHeYBcVvhq9Tyao.VW",
-      "role": "user"
+    "email": "user@kiranregmi.com",
+    "passwordHash": "$2a$10$6PIqxfzrmFg8ypejBenvoenm/oFsXf94Nb5HHeYBcVvhq9Tyao.VW",
+    "role": "user",
+    "permissions": ["soc-mastery", "7dayai", "job-tracker", "appointments"]
   },
   {
     "email": "test@kiranregmi.com",
     "passwordHash": "$2a$10$oDpFjSYZS0FQ1vT.oYMlM.xC1Jk7zIX1svVg.oAFWTmsvjyxD8XnG",
-    "role": "test"
+    "role": "test",
+    "permissions": ["soc-mastery"]
   },
   {
-  "email": "kid@kiranregmi.com",
-  "passwordHash": "$2b$10$kSSjWGgKmjFFvaxfUBTNEeXnvuMz00E9A6xr0gkSlHLFPW4U5mfdu",
-  "role": "kid"
-},
-{
-  "email": "adult@kiranregmi.com",
-  "passwordHash": "2b$10$w2l3P0wH2z9wRr6wH1Xw3u5c1V7mHq1o1kJpE7sZQzHn7vQX1C9vK",
-  "role": "adult"
-}
-
+    "email": "kid@kiranregmi.com",
+    "passwordHash": "$2b$10$kSSjWGgKmjFFvaxfUBTNEeXnvuMz00E9A6xr0gkSlHLFPW4U5mfdu",
+    "role": "kid",
+    "permissions": ["kids"]
+  },
+  {
+    "email": "adult@kiranregmi.com",
+    "passwordHash": "2b$10$w2l3P0wH2z9wRr6wH1Xw3u5c1V7mHq1o1kJpE7sZQzHn7vQX1C9vK",
+    "role": "adult",
+    "permissions": ["kids", "appointments"]
+  }
 ]

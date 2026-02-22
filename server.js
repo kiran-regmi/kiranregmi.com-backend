@@ -13,6 +13,7 @@ import helmet   from "helmet";
 
 import { config }      from "./config/config.js";
 import { apiLimiter }  from "./middleware/rateLimiter.js";
+import cloudflareRoutes from "./routes/cloudflareRoutes.js";
 
 // ── Routes ──
 import authRoutes     from "./routes/authRoutes.js";
@@ -54,6 +55,7 @@ app.use(cors({
 }));
 
 // Parse JSON bodies
+app.use("/api/cloudflare", cloudflareRoutes);  // GET /api/cloudflare/events, /stats
 app.use(express.json({ limit: "10kb" })); // 10kb limit prevents large payload attacks
 
 // General API rate limit
@@ -67,6 +69,7 @@ app.use("/api",               authRoutes);      // POST /api/login, /api/logout
 app.use("/api/questions",     questionRoutes);  // GET  /api/questions
 app.use("/api/secure-doc",    docRoutes);       // GET  /api/secure-doc/:name
 app.use("/api/admin",         adminRoutes);     // GET  /api/admin/logs, /api/admin/stats
+app.use("/api/cloudflare",    cloudflareRoutes);  // GET /api/cloudflare/events, /api/cloudflare/stats
 
 // ─────────────────────────────────────────
 //  HEALTH CHECK
