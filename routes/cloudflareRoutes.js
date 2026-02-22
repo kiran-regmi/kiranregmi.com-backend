@@ -36,7 +36,7 @@ router.get('/events', async (req, res) => {
       zones(filter: { zoneTag: "${CF_ZONE_ID}" }) {
         firewallEventsAdaptive(
           filter: { datetime_geq: "${since}", datetime_leq: "${until}" }
-          limit: 100
+          limit: 500
           orderBy: [datetime_DESC]
         ) {
           action clientIP clientCountryName clientRequestPath
