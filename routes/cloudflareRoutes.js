@@ -65,7 +65,7 @@ router.get('/events', async (req, res) => {
 
     const blocked    = enriched.filter(e=>e.action==='block').length;
     const challenged = enriched.filter(e=>['challenge','jschallenge','managed_challenge'].includes(e.action)).length;
-    const labyrinth  = enriched.filter(e=>e.action==='labyrinth').length;
+    const labyrinth  = enriched.filter(e=>e.action==='labyrinth'||e.action==='link_maze'||e.action==='link_maze_injected'||(e.action||'').includes('maze')).length;
 
     const cc = {};
     enriched.forEach(e=>{ if(e.country&&e.country!=='Unknown') cc[e.country]=(cc[e.country]||0)+1; });
@@ -104,7 +104,7 @@ router.get('/stats', async (req, res) => {
     res.json({
       success:true, total:events.length,
       blocked:events.filter(e=>e.action==='block').length,
-      labyrinth:events.filter(e=>e.action==='labyrinth').length,
+      labyrinth:events.filter(e=>e.action==='labyrinth'||e.action==='link_maze'||e.action==='link_maze_injected'||(e.action||'').includes('maze')).length,
       topThreatCountry: top ? top[0] : 'N/A', since, until
     });
   } catch(err) {
