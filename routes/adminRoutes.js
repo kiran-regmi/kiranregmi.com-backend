@@ -1,34 +1,34 @@
 // routes/adminRoutes.js
 // ─────────────────────────────────────────────────────────────
-//  Admin-only routes
-//  GET    /api/admin/logs           — paginated audit log
-//  GET    /api/admin/stats          — summary stats
-//  GET    /api/admin/users          — list all users
-//  POST   /api/admin/users          — create new user
-//  PATCH  /api/admin/users/:email   — update user profile/status
-//  DELETE /api/admin/users/:email   — delete user
-//  POST   /api/admin/users/:email/reset-password — admin password reset
+//  Admin-only routes — v2.2
+//  Uses getLogs/getStats already exported from auditLogger.js
+//  GET    /api/admin/logs
+//  GET    /api/admin/stats
+//  GET    /api/admin/users
+//  POST   /api/admin/users
+//  PATCH  /api/admin/users/:email
+//  DELETE /api/admin/users/:email
+//  POST   /api/admin/users/:email/reset-password
 // ─────────────────────────────────────────────────────────────
 
-import express  from "express";
-import fs       from "fs/promises";
-import path     from "path";
-import bcrypt   from "bcryptjs";
+import express from "express";
+import fs      from "fs/promises";
+import path    from "path";
+import bcrypt  from "bcryptjs";
 import { fileURLToPath } from "url";
 
-import { authenticateToken, requireRole } from "../middleware/auth.js";
-import { auditLog, EVENT }                from "../db/auditLogger.js";
-import { getDb }                          from "../db/auditLogger.js";
+import { authenticateToken, requireRole }    from "../middleware/auth.js";
+import { auditLog, getLogs, getStats, EVENT } from "../db/auditLogger.js";
 
 const router     = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 const USERS_FILE = path.join(__dirname, "../data/users.json");
 
-// ── Helpers ──
-async function readUsers()         { return JSON.parse(await fs.readFile(USERS_FILE, "utf-8")); }
-async function writeUsers(users)   { await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8"); }
-function initials(name = "")      { return name.split(" ").map(w => w[0] || "").join("").slice(0, 2).toUpperCase() || "??"; }
+// ── File helpers ──
+async function readUsers()       { return JSON.parse(await fs.readFile(USERS_FILE, "utf-8")); }
+async function writeUsers(users) { await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8"); }
+function initials(name = "")    { return name.split(" ").map(w => w[0] || "").join("").slice(0, 2).toUpperCase() || "??"; }
 
 // All admin routes require valid JWT + admin role
 router.use(authenticateToken, requireRole(["admin"]));
@@ -36,24 +36,17 @@ router.use(authenticateToken, requireRole(["admin"]));
 // ─────────────────────────────────────────
 //  GET /api/admin/stats
 // ─────────────────────────────────────────
-router.get("/stats", async (req, res) => {
+router.get("/stats", (req, res) => {
   try {
-    const db   = getDb();
-    const row  = db.prepare(`
-      SELECT
-        COUNT(*)                                              AS total,
-        SUM(outcome = 'failure')                             AS failures,
-        SUM(suspicious = 1)                                  AS suspicious,
-        SUM(timestamp >= datetime('now','-24 hours'))        AS last24h
-      FROM audit_log
-    `).get();
+    const stats = getStats();
     res.json({
-      total:      row.total      || 0,
-      failures:   row.failures   || 0,
-      suspicious: row.suspicious || 0,
-      last24h:    row.last24h    || 0,
+      total:      stats.total      || 0,
+      failures:   stats.failures   || 0,
+      suspicious: stats.suspicious || 0,
+      last24h:    stats.last24h    || 0,
     });
   } catch (err) {
+    console.error("Stats error:", err);
     res.status(500).json({ message: "Stats error" });
   }
 });
@@ -61,41 +54,30 @@ router.get("/stats", async (req, res) => {
 // ─────────────────────────────────────────
 //  GET /api/admin/logs
 // ─────────────────────────────────────────
-router.get("/logs", async (req, res) => {
+router.get("/logs", (req, res) => {
   try {
-    const db         = getDb();
     const limit      = Math.min(parseInt(req.query.limit)  || 25, 100);
     const offset     = parseInt(req.query.offset) || 0;
-    const event_type = req.query.event_type || null;
-    const outcome    = req.query.outcome    || null;
-    const suspicious = req.query.suspicious === "true" ? 1 : null;
-    const search     = req.query.search     || null;
+    const event_type = req.query.event_type || undefined;
+    const outcome    = req.query.outcome    || undefined;
+    const suspicious = req.query.suspicious === "true" ? true : undefined;
+    const search     = req.query.search     || undefined;
 
-    let where = ["1=1"];
-    let params = [];
-    if (event_type)           { where.push("event_type = ?");              params.push(event_type); }
-    if (outcome)              { where.push("outcome = ?");                 params.push(outcome); }
-    if (suspicious !== null)  { where.push("suspicious = ?");              params.push(suspicious); }
-    if (search)               { where.push("(user_email LIKE ? OR ip_address LIKE ?)"); params.push(`%${search}%`, `%${search}%`); }
-
-    const whereStr = where.join(" AND ");
-    const total  = db.prepare(`SELECT COUNT(*) AS c FROM audit_log WHERE ${whereStr}`).get(...params).c;
-    const logs   = db.prepare(`SELECT * FROM audit_log WHERE ${whereStr} ORDER BY id DESC LIMIT ? OFFSET ?`).all(...params, limit, offset);
-
-    res.json({ total, logs });
+    const result = getLogs({ limit, offset, event_type, outcome, suspicious, search });
+    res.json(result);
   } catch (err) {
+    console.error("Log error:", err);
     res.status(500).json({ message: "Log error" });
   }
 });
 
 // ─────────────────────────────────────────
-//  GET /api/admin/users — list all users
+//  GET /api/admin/users
 // ─────────────────────────────────────────
 router.get("/users", async (req, res) => {
   try {
     const users = await readUsers();
-    // Strip password hashes before sending
-    const safe = users.map(({ passwordHash, ...u }) => u);
+    const safe  = users.map(({ passwordHash, ...u }) => u);
     res.json({ users: safe, total: safe.length });
   } catch (err) {
     res.status(500).json({ message: "Failed to load users" });
@@ -130,16 +112,16 @@ router.post("/users", async (req, res) => {
     const newUser = {
       email,
       passwordHash,
-      role: role || "user",
+      role:        role        || "user",
       permissions: permissions || ["soc-mastery"],
       profile: {
         fullName,
-        phone:           phone    || "",
-        country:         country  || "",
-        avatarInitials:  initials(fullName),
-        status:          "active",
-        createdAt:       new Date().toISOString(),
-        lastLogin:       null
+        phone:          phone   || "",
+        country:        country || "",
+        avatarInitials: initials(fullName),
+        status:         "active",
+        createdAt:      new Date().toISOString(),
+        lastLogin:      null
       }
     };
 
@@ -147,7 +129,7 @@ router.post("/users", async (req, res) => {
     await writeUsers(users);
 
     auditLog({
-      event_type: "ADMIN_ACTION",
+      event_type: EVENT.ADMIN_ACTION,
       outcome:    "success",
       req,
       user_email: req.user.email,
@@ -157,7 +139,6 @@ router.post("/users", async (req, res) => {
 
     const { passwordHash: _, ...safe } = newUser;
     res.status(201).json({ message: "User created", user: safe });
-
   } catch (err) {
     console.error("Create user error:", err);
     res.status(500).json({ message: "Failed to create user" });
@@ -165,13 +146,12 @@ router.post("/users", async (req, res) => {
 });
 
 // ─────────────────────────────────────────
-//  PATCH /api/admin/users/:email — update profile/status/permissions
+//  PATCH /api/admin/users/:email
 // ─────────────────────────────────────────
 router.patch("/users/:email", async (req, res) => {
   const targetEmail = decodeURIComponent(req.params.email);
   const { fullName, phone, country, status, role, permissions } = req.body;
 
-  // Prevent admin from accidentally removing themselves
   if (targetEmail === req.user.email && status === "suspended") {
     return res.status(400).json({ message: "Cannot suspend your own account" });
   }
@@ -181,21 +161,18 @@ router.patch("/users/:email", async (req, res) => {
     const idx   = users.findIndex(u => u.email === targetEmail);
     if (idx === -1) return res.status(404).json({ message: "User not found" });
 
-    const user = users[idx];
-    user.profile = user.profile || {};
+    users[idx].profile = users[idx].profile || {};
+    if (fullName    !== undefined) { users[idx].profile.fullName = fullName; users[idx].profile.avatarInitials = initials(fullName); }
+    if (phone       !== undefined)  users[idx].profile.phone       = phone;
+    if (country     !== undefined)  users[idx].profile.country     = country;
+    if (status      !== undefined)  users[idx].profile.status      = status;
+    if (role        !== undefined)  users[idx].role                = role;
+    if (permissions !== undefined)  users[idx].permissions         = permissions;
 
-    if (fullName    !== undefined) { user.profile.fullName = fullName; user.profile.avatarInitials = initials(fullName); }
-    if (phone       !== undefined)  user.profile.phone       = phone;
-    if (country     !== undefined)  user.profile.country     = country;
-    if (status      !== undefined)  user.profile.status      = status;
-    if (role        !== undefined)  user.role                = role;
-    if (permissions !== undefined)  user.permissions         = permissions;
-
-    users[idx] = user;
     await writeUsers(users);
 
     auditLog({
-      event_type: "ADMIN_ACTION",
+      event_type: EVENT.ADMIN_ACTION,
       outcome:    "success",
       req,
       user_email: req.user.email,
@@ -203,16 +180,15 @@ router.patch("/users/:email", async (req, res) => {
       metadata:   { action: "update_user", target: targetEmail, changes: Object.keys(req.body) }
     });
 
-    const { passwordHash, ...safe } = user;
+    const { passwordHash, ...safe } = users[idx];
     res.json({ message: "User updated", user: safe });
-
   } catch (err) {
     res.status(500).json({ message: "Failed to update user" });
   }
 });
 
 // ─────────────────────────────────────────
-//  DELETE /api/admin/users/:email — remove user
+//  DELETE /api/admin/users/:email
 // ─────────────────────────────────────────
 router.delete("/users/:email", async (req, res) => {
   const targetEmail = decodeURIComponent(req.params.email);
@@ -222,21 +198,21 @@ router.delete("/users/:email", async (req, res) => {
   }
 
   try {
-    const users  = await readUsers();
-    const idx    = users.findIndex(u => u.email === targetEmail);
+    const users = await readUsers();
+    const idx   = users.findIndex(u => u.email === targetEmail);
     if (idx === -1) return res.status(404).json({ message: "User not found" });
 
     users.splice(idx, 1);
     await writeUsers(users);
 
-    // Also delete their progress file if it exists
+    // Clean up their progress file if it exists
     try {
-      const safe = targetEmail.replace(/[^a-zA-Z0-9@._-]/g, "_");
-      await fs.unlink(path.join(__dirname, `../data/progress/${safe}.json`));
+      const safeName = targetEmail.replace(/[^a-zA-Z0-9@._-]/g, "_");
+      await fs.unlink(path.join(__dirname, `../data/progress/${safeName}.json`));
     } catch {}
 
     auditLog({
-      event_type: "ADMIN_ACTION",
+      event_type: EVENT.ADMIN_ACTION,
       outcome:    "success",
       req,
       user_email: req.user.email,
@@ -270,7 +246,7 @@ router.post("/users/:email/reset-password", async (req, res) => {
     await writeUsers(users);
 
     auditLog({
-      event_type: "ADMIN_ACTION",
+      event_type: EVENT.ADMIN_ACTION,
       outcome:    "success",
       req,
       user_email: req.user.email,
