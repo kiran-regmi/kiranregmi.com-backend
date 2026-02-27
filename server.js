@@ -1,10 +1,15 @@
 // server.js
 // ─────────────────────────────────────────────────────────────
 //  kiranregmi-backend — Main entry point
-//  Version: 2.0 | February 2026
+//  Version: 2.1 | February 2026
 //
 //  Stack: Node.js · Express · JWT · bcryptjs · SQLite (audit)
 //  Hosted: Render.com
+//  Changes v2.1:
+//    - Added progressRoutes for per-user SOC mastery sync
+//    - Token expiry updated to 24h (see authRoutes.js)
+//    - Added /api/verify and /api/me endpoints
+//    - Added /api/admin/users management endpoints
 // ─────────────────────────────────────────────────────────────
 
 import express  from "express";
@@ -20,6 +25,7 @@ import authRoutes     from "./routes/authRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
 import docRoutes      from "./routes/docRoutes.js";
 import adminRoutes    from "./routes/adminRoutes.js";
+import progressRoutes from "./routes/progressRoutes.js";
 
 const app = express();
 
@@ -27,7 +33,6 @@ const app = express();
 //  SECURITY MIDDLEWARE
 // ─────────────────────────────────────────
 
-// Helmet — sets secure HTTP headers (CSP, HSTS, X-Frame-Options, etc.)
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   contentSecurityPolicy: {
@@ -54,21 +59,19 @@ app.use(cors({
   credentials: true
 }));
 
-// Parse JSON bodies
-app.use(express.json({ limit: "10kb" })); // 10kb limit prevents large payload attacks
-
-// General API rate limit
+app.use(express.json({ limit: "10kb" }));
 app.use("/api", apiLimiter);
 
 // ─────────────────────────────────────────
 //  ROUTES
 // ─────────────────────────────────────────
 
-app.use("/api",               authRoutes);      // POST /api/login, /api/logout
+app.use("/api",               authRoutes);      // POST /api/login, /api/logout, GET /api/verify, /api/me
 app.use("/api/questions",     questionRoutes);  // GET  /api/questions
 app.use("/api/secure-doc",    docRoutes);       // GET  /api/secure-doc/:name
-app.use("/api/admin",         adminRoutes);     // GET  /api/admin/logs, /api/admin/stats
-app.use("/api/cloudflare",    cloudflareRoutes);  // GET /api/cloudflare/events, /api/cloudflare/stats
+app.use("/api/admin",         adminRoutes);     // GET  /api/admin/logs, /api/admin/stats, /api/admin/users
+app.use("/api/cloudflare",    cloudflareRoutes);// GET  /api/cloudflare/events, /api/cloudflare/stats
+app.use("/api/progress",      progressRoutes);  // GET/POST/DELETE /api/progress
 
 // ─────────────────────────────────────────
 //  HEALTH CHECK
@@ -78,7 +81,7 @@ app.get("/", (req, res) => {
   res.json({
     status:  "ok",
     service: "kiranregmi-backend",
-    version: "2.0",
+    version: "2.1",
     env:     config.nodeEnv,
   });
 });
@@ -95,7 +98,6 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// Global error handler — never expose stack traces in production
 app.use((err, req, res, next) => {
   console.error("[ERROR]", err.message);
   res.status(err.status || 500).json({
@@ -108,7 +110,8 @@ app.use((err, req, res, next) => {
 // ─────────────────────────────────────────
 
 app.listen(config.port, () => {
-  console.log(`✅ kiranregmi-backend v2.0 running on port ${config.port}`);
+  console.log(`✅ kiranregmi-backend v2.1 running on port ${config.port}`);
   console.log(`🌍 Environment: ${config.nodeEnv}`);
   console.log(`🔐 Audit logging: SQLite @ db/audit.db`);
+  console.log(`📊 Progress sync: data/progress/`);
 });

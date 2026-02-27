@@ -3,30 +3,75 @@
     "email": "admin@kiranregmi.com",
     "passwordHash": "$2a$10$4Sb3RBDy21wJAtqUthWjhejLMamonMnprDUKW6B9aMBlq7QGcWuEq",
     "role": "admin",
-    "permissions": ["soc-mastery", "7dayai", "job-tracker", "appointments", "kids", "ai-mastery", "ai-agent"]
+    "permissions": ["soc-mastery", "7dayai", "job-tracker", "appointments", "kids", "ai-mastery", "ai-agent"],
+    "profile": {
+      "fullName": "Kiran Regmi",
+      "phone": "",
+      "country": "US",
+      "avatarInitials": "KR",
+      "status": "active",
+      "createdAt": "2026-02-26T00:00:00Z",
+      "lastLogin": null
+    }
   },
   {
     "email": "user@kiranregmi.com",
     "passwordHash": "$2a$10$6PIqxfzrmFg8ypejBenvoenm/oFsXf94Nb5HHeYBcVvhq9Tyao.VW",
     "role": "user",
-    "permissions": ["soc-mastery", "7dayai", "job-tracker", "appointments"]
+    "permissions": ["soc-mastery", "7dayai", "job-tracker", "appointments"],
+    "profile": {
+      "fullName": "Site User",
+      "phone": "",
+      "country": "",
+      "avatarInitials": "SU",
+      "status": "active",
+      "createdAt": "2026-02-26T00:00:00Z",
+      "lastLogin": null
+    }
   },
   {
     "email": "test@kiranregmi.com",
     "passwordHash": "$2a$10$oDpFjSYZS0FQ1vT.oYMlM.xC1Jk7zIX1svVg.oAFWTmsvjyxD8XnG",
     "role": "test",
-    "permissions": ["soc-mastery"]
+    "permissions": ["soc-mastery"],
+    "profile": {
+      "fullName": "Test Account",
+      "phone": "",
+      "country": "",
+      "avatarInitials": "TA",
+      "status": "active",
+      "createdAt": "2026-02-26T00:00:00Z",
+      "lastLogin": null
+    }
   },
   {
     "email": "kid@kiranregmi.com",
     "passwordHash": "$2b$10$kSSjWGgKmjFFvaxfUBTNEeXnvuMz00E9A6xr0gkSlHLFPW4U5mfdu",
     "role": "kid",
-    "permissions": ["kids"]
+    "permissions": ["kids"],
+    "profile": {
+      "fullName": "Pranav Regmi",
+      "phone": "",
+      "country": "US",
+      "avatarInitials": "PR",
+      "status": "active",
+      "createdAt": "2026-02-26T00:00:00Z",
+      "lastLogin": null
+    }
   },
   {
     "email": "adult@kiranregmi.com",
     "passwordHash": "2b$10$w2l3P0wH2z9wRr6wH1Xw3u5c1V7mHq1o1kJpE7sZQzHn7vQX1C9vK",
     "role": "adult",
-    "permissions": ["kids", "appointments"]
+    "permissions": ["kids", "appointments"],
+    "profile": {
+      "fullName": "Adult User",
+      "phone": "",
+      "country": "",
+      "avatarInitials": "AU",
+      "status": "active",
+      "createdAt": "2026-02-26T00:00:00Z",
+      "lastLogin": null
+    }
   }
 ]
