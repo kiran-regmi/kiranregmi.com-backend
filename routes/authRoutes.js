@@ -180,4 +180,46 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────
+//  PATCH /api/me — self-update profile (any authenticated user)
+//  Only allows: fullName, phone, country — cannot change role/permissions/status
+// ─────────────────────────────────────────
+router.patch("/me", authenticateToken, async (req, res) => {
+  const { fullName, phone, country } = req.body;
+
+  if (!fullName || !fullName.trim()) {
+    return res.status(400).json({ message: "Full name is required" });
+  }
+
+  try {
+    const users = JSON.parse(await fs.readFile(USERS_FILE, "utf-8"));
+    const idx   = users.findIndex(u => u.email === req.user.email);
+    if (idx === -1) return res.status(404).json({ message: "User not found" });
+
+    users[idx].profile = users[idx].profile || {};
+    users[idx].profile.fullName       = fullName.trim();
+    users[idx].profile.phone          = phone?.trim()   || users[idx].profile.phone   || "";
+    users[idx].profile.country        = country?.trim() || users[idx].profile.country || "";
+    users[idx].profile.avatarInitials = fullName.trim().split(" ")
+      .map(w => w[0] || "").join("").slice(0, 2).toUpperCase() || "??";
+
+    await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+
+    auditLog({
+      event_type: EVENT.ADMIN_ACTION,
+      outcome:    "success",
+      req,
+      user_email: req.user.email,
+      user_role:  req.user.role,
+      metadata:   { action: "self_update_profile" }
+    });
+
+    const { passwordHash, ...safe } = users[idx];
+    res.json({ message: "Profile updated", user: safe });
+  } catch (err) {
+    console.error("Profile update error:", err);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+});
+
 export default router;
