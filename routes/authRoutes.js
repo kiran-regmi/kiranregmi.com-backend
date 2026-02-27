@@ -88,10 +88,14 @@ router.post("/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Update lastLogin timestamp
-    users[userIdx].profile = users[userIdx].profile || {};
-    users[userIdx].profile.lastLogin = new Date().toISOString();
-    await writeUsers(users);
+    // Update lastLogin timestamp — non-fatal, login succeeds even if write fails
+    try {
+      users[userIdx].profile = users[userIdx].profile || {};
+      users[userIdx].profile.lastLogin = new Date().toISOString();
+      await writeUsers(users);
+    } catch (writeErr) {
+      console.warn("Could not update lastLogin (non-fatal):", writeErr.message);
+    }
 
     // Issue 24h token
     const token = jwt.sign(
