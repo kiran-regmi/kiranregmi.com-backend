@@ -26,6 +26,7 @@ import questionRoutes from "./routes/questionRoutes.js";
 import docRoutes      from "./routes/docRoutes.js";
 import adminRoutes    from "./routes/adminRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
+import tasksRoutes    from "./routes/tasksRoutes.js";
 
 const app = express();
 
@@ -72,6 +73,7 @@ app.use("/api/secure-doc",    docRoutes);       // GET  /api/secure-doc/:name
 app.use("/api/admin",         adminRoutes);     // GET  /api/admin/logs, /api/admin/stats, /api/admin/users
 app.use("/api/cloudflare",    cloudflareRoutes);// GET  /api/cloudflare/events, /api/cloudflare/stats
 app.use("/api/progress",      progressRoutes);  // GET/POST/DELETE /api/progress
+app.use("/api/tasks",         tasksRoutes);     // GET/POST/DELETE /api/tasks
 
 // ─────────────────────────────────────────
 //  HEALTH CHECK
