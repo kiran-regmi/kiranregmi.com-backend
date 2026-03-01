@@ -1,7 +1,7 @@
 [
   {
     "email": "kiran@kiranregmi.com",
-    "passwordHash": "REPLACE_WITH_HASH",
+    "passwordHash": "$2a$10$gw8KHoQpAx75UxLUWj2rHedE32r5IYDk06B7mTB0lntwkAua.yMiq",
     "role": "owner",
     "permissions": [
       "soc-mastery",
@@ -23,7 +23,7 @@
       "country": "US",
       "avatarInitials": "KR",
       "status": "active",
-      "createdAt": "2026-02-26T00:00:00Z",
+      "createdAt": "2026-03-01T00:00:00Z",
       "lastLogin": null
     }
   },
