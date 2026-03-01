@@ -35,6 +35,11 @@ async function writeUsers(users) {
   await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
 }
 
+// Role → destination (enforced on frontend):
+// owner → office.html     (kiran@kiranregmi.com)
+// admin → admin.html      (admin@kiranregmi.com)
+// user/kid/test/adult → dashboard.html
+//
 // ─────────────────────────────────────────
 //  POST /api/login
 // ─────────────────────────────────────────

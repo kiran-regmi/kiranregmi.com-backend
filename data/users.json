@@ -1,5 +1,33 @@
 [
   {
+    "email": "kiran@kiranregmi.com",
+    "passwordHash": "REPLACE_WITH_HASH",
+    "role": "owner",
+    "permissions": [
+      "soc-mastery",
+      "7dayai",
+      "job-tracker",
+      "appointments",
+      "tasks",
+      "kids",
+      "ai-mastery",
+      "ai-agent",
+      "ai-foundation",
+      "vault",
+      "news",
+      "trading"
+    ],
+    "profile": {
+      "fullName": "Kiran Regmi",
+      "phone": "",
+      "country": "US",
+      "avatarInitials": "KR",
+      "status": "active",
+      "createdAt": "2026-02-26T00:00:00Z",
+      "lastLogin": null
+    }
+  },
+  {
     "email": "admin@kiranregmi.com",
     "passwordHash": "$2a$10$4Sb3RBDy21wJAtqUthWjhejLMamonMnprDUKW6B9aMBlq7QGcWuEq",
     "role": "admin",
@@ -11,13 +39,14 @@
       "tasks",
       "kids",
       "ai-mastery",
-      "ai-agent"
+      "ai-agent",
+      "ai-foundation"
     ],
     "profile": {
-      "fullName": "Kiran Regmi",
+      "fullName": "Admin User",
       "phone": "",
       "country": "US",
-      "avatarInitials": "KR",
+      "avatarInitials": "AU",
       "status": "active",
       "createdAt": "2026-02-26T00:00:00Z",
       "lastLogin": null

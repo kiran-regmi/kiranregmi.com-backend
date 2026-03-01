@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 
 const passwords = [
+  { email: "kiran@kiranregmi.com", password: "Kiran@2019", role: "owner" },
   { email: "admin@kiranregmi.com", password: "Admin@123", role: "admin" },
   { email: "user@kiranregmi.com", password: "User@123", role: "user" },
   { email: "test@kiranregmi.com", password: "Test@123", role: "user" },
