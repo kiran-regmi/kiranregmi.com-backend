@@ -1,7 +1,7 @@
 [
   {
     "email": "kiran@kiranregmi.com",
-    "passwordHash": "$2a$10$gw8KHoQpAx75UxLUWj2rHedE32r5IYDk06B7mTB0lntwkAua.yMiq",
+    "passwordHash": "$2a$12$OnsqIgbLfzxpsSZWtZlozOkD5RE0WzKdQYL9.aJtUl5sSaxAudM3q",
     "role": "owner",
     "permissions": [
       "soc-mastery",
