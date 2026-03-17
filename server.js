@@ -28,7 +28,7 @@ import adminRoutes    from "./routes/adminRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
 import tasksRoutes    from "./routes/tasksRoutes.js";
 import briefingRoutes from "./routes/briefingRoutes.js";
-import twpRoute from './twp-route-esm.js';
+import twpRoute       from './routes/twp-route.js';
 
 const app = express();
 
