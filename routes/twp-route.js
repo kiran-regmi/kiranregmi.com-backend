@@ -14,9 +14,12 @@ const router = express.Router();
 const TWP_BASE  = 'https://twpstudentportal.com';
 const LOGIN_URL = `${TWP_BASE}/wp-login.php`;
 const CAL_URL   = `${TWP_BASE}/my-calendar-month/`;
-const CACHE_TTL = 60 * 60 * 1000;
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 let _cache = { data: null, at: 0 };
+
+// Polite delay between requests to avoid rate limiting
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function buildClient() {
   const jar = new CookieJar();
@@ -48,6 +51,10 @@ async function loginTWP(client) {
     headers: { 'Referer': TWP_BASE }
   });
 
+  if (loginPageRes.status === 429) {
+    throw new Error('TWP portal rate limit hit — please wait a few minutes and try again');
+  }
+
   const $page = load(loginPageRes.data);
 
   // Extract hidden fields (nonce, redirect, etc)
@@ -61,6 +68,9 @@ async function loginTWP(client) {
   const formAction = $page('form').attr('action') || LOGIN_URL;
   console.log('[TWP] Form action:', formAction);
   console.log('[TWP] Hidden fields found:', Object.keys(hiddenFields));
+
+  // Polite delay before posting login
+  await delay(1500);
 
   // Step 2: POST with credentials + all hidden fields
   const params = new URLSearchParams();
@@ -106,6 +116,7 @@ async function scrapeMonth(client, monthStr) {
   const url = `${CAL_URL}?month=${month}&yr=${year}`;
 
   console.log('[TWP] Scraping:', url);
+  await delay(1000); // polite delay
   const res = await client.get(url, { headers: { Referer: TWP_BASE } });
 
   if (res.data.includes('wp-login') || res.data.includes('Error logging in')) {
