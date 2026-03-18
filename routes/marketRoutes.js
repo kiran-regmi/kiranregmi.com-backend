@@ -7,11 +7,9 @@ import express from 'express';
 
 const router = express.Router();
 
-// ── Lazy-load yahoo-finance2 inside handlers (avoids startup crash) ──
-async function getYahoo() {
-  const mod = await import('yahoo-finance2');
-  return mod.default;
-}
+// ── yahoo-finance2 v3 — must instantiate with new YahooFinance() ──
+import YahooFinance from 'yahoo-finance2';
+const yahooFinance = new YahooFinance();
 
 // ── PING ──────────────────────────────────────────────────────
 router.get('/ping', (_req, res) => {
@@ -82,7 +80,7 @@ router.get('/quotes', async (req, res) => {
       return res.json({ ok: true, cached: true, data: _quotesCache.data });
     }
 
-    const yahooFinance = await getYahoo();
+    
     const session = getSession();
 
     const results = await Promise.allSettled(
@@ -133,7 +131,7 @@ router.post('/setups', async (req, res) => {
 
     // Fetch quotes fresh if cache is stale
     if (!_quotesCache.data || (Date.now() - _quotesCache.at) > QUOTE_TTL) {
-      const yahooFinance = await getYahoo();
+      
       const results = await Promise.allSettled(FUTURES.map(f => yahooFinance.quote(f.symbol)));
       const quotes = results.map((result, i) => {
         const f = FUTURES[i];
