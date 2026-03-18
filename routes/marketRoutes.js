@@ -18,6 +18,12 @@ import yahooFinance from 'yahoo-finance2';
 
 const router = express.Router();
 
+// Test Ping Endpoint
+router.get('/ping', (_req, res) => {
+  res.json({ ok: true, message: 'market routes loaded' });
+});
+
+
 // ── SYMBOLS ──────────────────────────────────────────────────
 const FUTURES = [
   { symbol: 'ES=F',  name: 'S&P 500 Futures',     short: 'ES',  tv: 'CME_MINI:ES1!' },
