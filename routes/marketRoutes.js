@@ -1,7 +1,7 @@
 /**
  * Market Data + AI Trade Setups Route (ES Module)
  * File: routes/marketRoutes.js
- * Focus: Micro futures for small accounts
+ * Focus: Micro futures — small account
  */
 
 import express from 'express';
@@ -32,8 +32,7 @@ function getSession() {
   const now = new Date();
   const etOffset = isDST(now) ? -4 : -5;
   const etHour = (now.getUTCHours() + etOffset + 24) % 24;
-  const etMin  = now.getUTCMinutes();
-  const etTime = etHour + etMin / 60;
+  const etTime = etHour + now.getUTCMinutes() / 60;
   const dow = now.getUTCDay();
   if (dow === 0 || dow === 6) return { session: 'weekend',    label: 'Weekend',     safe: false };
   if (etTime >= 6   && etTime < 9.25) return { session: 'premarket',  label: 'Pre-Market',  safe: true  };
@@ -101,36 +100,54 @@ router.post('/setups', async (req, res) => {
     const validQuotes = (_quotesCache.data?.quotes || []).filter(q => q.price);
     if (!validQuotes.length) return res.status(503).json({ ok: false, error: 'No market data available.' });
 
-    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago' });
-    const timeET = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short' });
+    const today = new Date().toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago'
+    });
+    const timeET = new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short'
+    });
 
     const marketContext = validQuotes.map(q => {
       const chg = q.changePct ? (q.changePct > 0 ? '+' : '') + q.changePct.toFixed(2) + '%' : 'N/A';
-      return `${q.short} (${q.name}): ${q.price?.toFixed(2)} (${chg}) | H:${q.high?.toFixed(2)} L:${q.low?.toFixed(2)} | Prev:${q.prevClose?.toFixed(2)}`;
-    }).join('\n');
+      const vs = q.prevClose ? (q.price > q.prevClose ? 'ABOVE' : 'BELOW') + ' prev close ' + q.prevClose.toFixed(2) : '';
+      return `${q.short} (${q.name}):
+  Price: ${q.price?.toFixed(2)} (${chg}) | ${vs}
+  Session H: ${q.high?.toFixed(2)} | Session L: ${q.low?.toFixed(2)} | Prev Close: ${q.prevClose?.toFixed(2)}
+  Volume: ${q.volume?.toLocaleString() || 'N/A'}`;
+    }).join('\n\n');
 
-    const rthNote = session.session === 'rth' ? 'RTH — data may be 15 min delayed.' : `Session: ${session.label}`;
+    const rthNote = session.session === 'rth'
+      ? 'NOTE: RTH session — data may be 15 min delayed. State this in rationale.'
+      : `Session: ${session.label}`;
 
-    const prompt = `Futures trading coach. Trader uses MICRO contracts, small account.
+    const prompt = `You are an expert futures day trading coach. Trader has a small account and trades MICRO contracts only (MES, MNQ, MGC, MCL).
+
 ${today} | ${timeET} | ${rthNote}
 
-LIVE PRICES:
+LIVE MARKET DATA (Yahoo Finance):
 ${marketContext}
 
-Generate one setup per instrument. Levels must come directly from the prices above.
-Rationale: ONE sentence only using actual H/L/PrevClose numbers. No filler.
+Generate one detailed trade setup per instrument using ONLY the real prices above.
 
-Format, separated by ---:
-DIRECTION: [LONG or SHORT]
-ASSET: [e.g. "MES — Micro S&P 500"]
-BASIS: [e.g. "ES at 5,684.25"]
-RATIONALE: [one sentence, real numbers only]
-ENTRY: [price]
+RULES:
+- Calculate ALL price levels mathematically from the real H/L/PrevClose data
+- RATIONALE must explain: where price is relative to prev close, what H/L tells us, and why this direction
+- Each of the 3 confirmations must be a specific, actionable chart signal
+- If no clear setup exists, DIRECTION: WAIT with explanation
+
+Format — one block per instrument, separated by ---:
+DIRECTION: [LONG or SHORT or WAIT]
+ASSET: [Micro symbol — e.g. "MES — Micro S&P 500"]
+BASIS: [e.g. "ES at 5,684.25 | H:5,692 L:5,668 PrevClose:5,671"]
+RATIONALE: [2 sentences: where price closed relative to prev close, what overnight H/L structure tells us, and the setup reason]
+ENTRY: [exact price level]
 TARGET: [TP1] / [TP2]
-STOP: [price]
+STOP: [exact price level]
 TIMEFRAME: [15min or 1H]
-RR: [ratio]
-CONFIRM: [one chart signal]
+RR: [ratio e.g. 1:2.5]
+C1: [confirmation 1 — specific candle pattern or price action signal]
+C2: [confirmation 2 — volume or momentum signal]
+C3: [confirmation 3 — indicator or structural confirmation e.g. VWAP, EMA, key level hold]
 ---
 (4 setups: MES, MNQ, MGC, MCL)`;
 
@@ -140,7 +157,7 @@ CONFIRM: [one chart signal]
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 600,
+        max_tokens: 1200,
         temperature: 0.2
       })
     });
