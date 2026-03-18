@@ -1,0 +1,289 @@
+/**
+ * Market Data + AI Trade Setups Route (ES Module)
+ * File: routes/marketRoutes.js
+ *
+ * Setup:
+ *   npm install yahoo-finance2
+ *   In server.js: import marketRoutes from './routes/marketRoutes.js';
+ *                 app.use('/api/market', marketRoutes);
+ *
+ * Endpoints:
+ *   GET  /api/market/quotes          → live prices for all 8 futures
+ *   POST /api/market/setups          → real-price AI trade setups (body: { groqKey })
+ *   GET  /api/market/session         → current trading session info
+ */
+
+import express from 'express';
+import yahooFinance from 'yahoo-finance2';
+
+const router = express.Router();
+
+// ── SYMBOLS ──────────────────────────────────────────────────
+const FUTURES = [
+  { symbol: 'ES=F',  name: 'S&P 500 Futures',     short: 'ES',  tv: 'CME_MINI:ES1!' },
+  { symbol: 'NQ=F',  name: 'Nasdaq 100 Futures',   short: 'NQ',  tv: 'CME_MINI:NQ1!' },
+  { symbol: 'GC=F',  name: 'Gold Futures',          short: 'GC',  tv: 'COMEX:GC1!'    },
+  { symbol: 'CL=F',  name: 'Crude Oil Futures',     short: 'CL',  tv: 'NYMEX:CL1!'    },
+  { symbol: '6E=F',  name: 'Euro FX Futures',       short: '6E',  tv: 'CME:6E1!'      },
+  { symbol: 'ZB=F',  name: '30Y T-Bond Futures',    short: 'ZB',  tv: 'CBOT:ZB1!'     },
+  { symbol: 'BTC-USD', name: 'Bitcoin',             short: 'BTC', tv: 'BINANCE:BTCUSDT'},
+  { symbol: 'RTY=F', name: 'Russell 2000 Futures',  short: 'RTY', tv: 'CME_MINI:RTY1!'},
+];
+
+// ── SESSION DETECTION (CT = UTC-5 standard, UTC-6 daylight) ──
+function getSession() {
+  const now = new Date();
+  // Use ET (UTC-5 standard / UTC-4 daylight) then convert to CT
+  const etOffset = isDST(now) ? -4 : -5;
+  const etHour = (now.getUTCHours() + etOffset + 24) % 24;
+  const etMin  = now.getUTCMinutes();
+  const etTime = etHour + etMin / 60;
+  const dayOfWeek = now.getUTCDay();
+
+  // Weekend
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    return { session: 'weekend', label: 'Weekend', safe: false, warning: 'Markets closed — weekend.' };
+  }
+
+  // Sessions in ET:
+  // Pre-market:  6:00 AM – 9:15 AM  (safest for Yahoo data)
+  // RTH:         9:30 AM – 4:00 PM  (15-min delay warning)
+  // After hours: 4:00 PM – 6:00 PM
+  // Overnight:   6:00 PM – 6:00 AM  (futures session)
+
+  if (etTime >= 6 && etTime < 9.25) {
+    return {
+      session: 'premarket',
+      label: 'Pre-Market',
+      safe: true,
+      warning: null,
+      note: 'Pre-market data is near real-time. Good time for setup planning.'
+    };
+  } else if (etTime >= 9.5 && etTime < 16) {
+    return {
+      session: 'rth',
+      label: 'RTH (Regular Trading Hours)',
+      safe: false,
+      warning: '⚠ RTH ACTIVE — Yahoo Finance data may be 15 min delayed. Always verify price on your chart before entering any trade.',
+      note: 'For live trading, confirm entry/stop levels on TradingView or your broker platform.'
+    };
+  } else if (etTime >= 16 && etTime < 18) {
+    return {
+      session: 'afterhours',
+      label: 'After Hours',
+      safe: true,
+      warning: null,
+      note: 'After-hours session. Setups based on closing prices.'
+    };
+  } else {
+    return {
+      session: 'overnight',
+      label: 'Overnight / Globex',
+      safe: true,
+      warning: null,
+      note: 'Overnight futures session. Prices are active — good for gap analysis.'
+    };
+  }
+}
+
+function isDST(date) {
+  const jan = new Date(date.getFullYear(), 0, 1).getTimezoneOffset();
+  const jul = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+  return Math.max(jan, jul) !== date.getTimezoneOffset();
+}
+
+// ── CACHE (5 min for quotes) ──────────────────────────────────
+let _quotesCache = { data: null, at: 0 };
+const QUOTE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// ── GET /api/market/quotes ────────────────────────────────────
+router.get('/quotes', async (req, res) => {
+  try {
+    // Return cache if fresh
+    if (_quotesCache.data && (Date.now() - _quotesCache.at) < QUOTE_TTL) {
+      return res.json({ ok: true, cached: true, data: _quotesCache.data });
+    }
+
+    const session = getSession();
+    const quotes = [];
+
+    // Fetch all symbols in parallel
+    const results = await Promise.allSettled(
+      FUTURES.map(f => yahooFinance.quote(f.symbol))
+    );
+
+    results.forEach((result, i) => {
+      const f = FUTURES[i];
+      if (result.status === 'fulfilled' && result.value) {
+        const q = result.value;
+        quotes.push({
+          symbol:    f.symbol,
+          short:     f.short,
+          name:      f.name,
+          tvSymbol:  f.tv,
+          tvUrl:     `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(f.tv)}`,
+          price:     q.regularMarketPrice,
+          open:      q.regularMarketOpen,
+          high:      q.regularMarketDayHigh,
+          low:       q.regularMarketDayLow,
+          prevClose: q.regularMarketPreviousClose,
+          change:    q.regularMarketChange,
+          changePct: q.regularMarketChangePercent,
+          volume:    q.regularMarketVolume,
+          currency:  q.currency || 'USD',
+          quoteTime: q.regularMarketTime
+            ? new Date(q.regularMarketTime * 1000).toISOString()
+            : new Date().toISOString(),
+        });
+      } else {
+        quotes.push({
+          symbol: f.symbol, short: f.short, name: f.name,
+          tvSymbol: f.tv,
+          tvUrl: `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(f.tv)}`,
+          error: result.reason?.message || 'Failed to fetch',
+          price: null
+        });
+      }
+    });
+
+    const data = {
+      quotes,
+      session,
+      fetchedAt: new Date().toISOString(),
+      count: quotes.filter(q => q.price).length
+    };
+
+    _quotesCache = { data, at: Date.now() };
+    res.json({ ok: true, cached: false, data });
+
+  } catch (err) {
+    console.error('[Market quotes error]', err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ── GET /api/market/session ───────────────────────────────────
+router.get('/session', (req, res) => {
+  res.json({ ok: true, data: getSession(), timestamp: new Date().toISOString() });
+});
+
+// ── POST /api/market/setups ───────────────────────────────────
+// Body: { groqKey: "gsk_..." }
+router.post('/setups', async (req, res) => {
+  try {
+    const groqKey = req.body?.groqKey;
+    if (!groqKey) return res.status(400).json({ ok: false, error: 'groqKey required in request body' });
+
+    // 1. Fetch live quotes
+    let quotesData = _quotesCache.data;
+    if (!quotesData || (Date.now() - _quotesCache.at) > QUOTE_TTL) {
+      // Re-fetch fresh
+      const freshRes = await fetch(`http://localhost:${process.env.PORT || 3000}/api/market/quotes`);
+      const freshJson = await freshRes.json();
+      quotesData = freshJson.data;
+    }
+
+    const session = getSession();
+    const validQuotes = (quotesData?.quotes || []).filter(q => q.price);
+
+    if (!validQuotes.length) {
+      return res.status(503).json({ ok: false, error: 'Could not fetch live market data. Try again.' });
+    }
+
+    // 2. Build market context string for Groq
+    const today = new Date().toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+      timeZone: 'America/Chicago'
+    });
+    const timeET = new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short'
+    });
+
+    const marketContext = validQuotes.map(q => {
+      const chg = q.changePct ? (q.changePct > 0 ? '+' : '') + q.changePct.toFixed(2) + '%' : 'N/A';
+      const range = (q.high && q.low) ? `H:${q.high.toFixed(2)} / L:${q.low.toFixed(2)}` : '';
+      const prev = q.prevClose ? `PrevClose:${q.prevClose.toFixed(2)}` : '';
+      return `${q.short} (${q.name}): ${q.price?.toFixed(2)} (${chg}) | ${range} | ${prev}`;
+    }).join('\n');
+
+    const sessionWarning = session.session === 'rth'
+      ? '\nNOTE: RTH session — these are potentially 15-min delayed Yahoo Finance quotes. Trader must verify exact price on their chart before execution.'
+      : `\nSession: ${session.label}`;
+
+    // 3. Call Groq with real market data
+    const prompt = `You are an expert futures day trading coach analyzing REAL live market data.
+
+Today: ${today} | Time: ${timeET}${sessionWarning}
+
+CURRENT LIVE MARKET DATA (from Yahoo Finance):
+${marketContext}
+
+Using ONLY these real prices as your basis, generate 8 high-probability trade setups.
+Calculate ALL entry, target, and stop levels mathematically from the real prices above.
+Use proper market structure: key S/R based on today's range, previous close, round numbers, and common fibonacci levels.
+
+Format EXACTLY — one setup per block, separated by ---:
+DIRECTION: [LONG or SHORT]
+ASSET: [symbol and full name, e.g. "ES1! — S&P 500 Futures"]
+PRICE_BASIS: [the current price you used, e.g. "Based on ES at 5,842.25"]
+SETUP: [2 sentences: market structure rationale using real high/low/prev close levels]
+ENTRY: [specific price level — must be near current price]
+TARGET: [TP1] / [TP2]
+STOP: [stop loss level — logical distance from entry]
+TIMEFRAME: [15min / 1H / Daily]
+RISK_REWARD: [ratio, e.g. 1:2.5]
+CONFIDENCE: [High / Medium]
+TV_NOTE: [one sentence on what to look for on the chart to confirm entry]
+---
+(8 total setups: ES, NQ, GC, CL, 6E, ZB, BTC, RTY)`;
+
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${groqKey}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 2000,
+        temperature: 0.3
+      })
+    });
+
+    if (!groqRes.ok) {
+      const errData = await groqRes.json();
+      throw new Error(errData.error?.message || `Groq error ${groqRes.status}`);
+    }
+
+    const groqData = await groqRes.json();
+    const setupText = groqData.choices[0].message.content;
+
+    // 4. Attach TradingView URLs and quote data to response
+    const tvLinks = {};
+    validQuotes.forEach(q => { tvLinks[q.short] = q.tvUrl; });
+
+    res.json({
+      ok: true,
+      data: {
+        setups: setupText,
+        quotes: validQuotes,
+        session,
+        tvLinks,
+        generatedAt: new Date().toISOString(),
+        generatedAtET: timeET,
+        dataSource: 'Yahoo Finance (yfinance)',
+        disclaimer: session.session === 'rth'
+          ? '⚠ RTH SESSION: Data may be 15 min delayed. ALWAYS verify price on your broker platform before entering.'
+          : '✅ Pre/After-market: Data is near real-time. Still verify before entry.',
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString()
+      }
+    });
+
+  } catch (err) {
+    console.error('[Market setups error]', err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+export default router;
