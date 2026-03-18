@@ -212,7 +212,7 @@ TV_NOTE: [one sentence on what to look for on the chart to confirm entry]
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${groqKey}` },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama-3.1-8b-instant',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 2000,
         temperature: 0.3
