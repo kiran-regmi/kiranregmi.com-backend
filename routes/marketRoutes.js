@@ -8,7 +8,7 @@ import express from 'express';
 const router = express.Router();
 
 // ── yahoo-finance2 v3 — must instantiate with new YahooFinance() ──
-import { YahooFinance } from 'yahoo-finance2';
+import YahooFinance from 'yahoo-finance2';
 const yahooFinance = new YahooFinance();
 
 // ── PING ──────────────────────────────────────────────────────
