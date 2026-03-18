@@ -29,6 +29,7 @@ import progressRoutes from "./routes/progressRoutes.js";
 import tasksRoutes    from "./routes/tasksRoutes.js";
 import briefingRoutes from "./routes/briefingRoutes.js";
 import twpRoute       from './routes/twp-route.js';
+import marketRoutes   from './routes/marketRoutes.js';
 
 const app = express();
 
@@ -77,7 +78,8 @@ app.use("/api/cloudflare",    cloudflareRoutes);// GET  /api/cloudflare/events, 
 app.use("/api/progress",      progressRoutes);  // GET/POST/DELETE /api/progress
 app.use("/api/tasks",         tasksRoutes);     // GET/POST/DELETE /api/tasks
 app.use("/api/briefing",      briefingRoutes);  // POST /api/briefing (Anthropic proxy)
-app.use("/api/twp",           twpRoute);        // TWP route for progress sync (GET/POST /api/twp/progress)
+app.use("/api/twp",           twpRoute); 
+app.use("/api/market",        marketRoutes);    // Market data route (GET/POST /api/market)
 // ─────────────────────────────────────────
 //  HEALTH CHECK
 // ─────────────────────────────────────────
