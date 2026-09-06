@@ -2,44 +2,46 @@
 // ─────────────────────────────────────────────────────────────
 //  Authentication routes
 //  POST /api/login    — issue JWT token
+//  POST /api/signup   — create a new account (role: student) + issue JWT
 //  POST /api/logout   — log out (client discards token)
 //  GET  /api/verify   — verify token is still valid
 //  GET  /api/me       — return current user profile
+//  PATCH /api/me      — self-update profile
+//
+//  v2.2: migrated from data/users.json (flat file) to SQLite (db/usersDb.js).
+//  A flat file with read-modify-write on every login was fine for a small,
+//  hand-managed set of accounts, but risks a race/corruption once strangers
+//  can sign themselves up concurrently. See db/usersDb.js for the migration.
 // ─────────────────────────────────────────────────────────────
 
 import express from "express";
-import fs from "fs/promises";
-import path from "path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { fileURLToPath } from "url";
 
-import { config }           from "../config/config.js";
-import { loginLimiter }     from "../middleware/rateLimiter.js";
-import { auditLog, EVENT }  from "../db/auditLogger.js";
+import { config }            from "../config/config.js";
+import { loginLimiter }      from "../middleware/rateLimiter.js";
+import { auditLog, EVENT }   from "../db/auditLogger.js";
 import { authenticateToken } from "../middleware/auth.js";
+import {
+  getUserByEmail,
+  emailExists,
+  createUser,
+  updateLastLogin,
+  updateProfile,
+} from "../db/usersDb.js";
 
 const router = express.Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
-const USERS_FILE = path.join(__dirname, "../data/users.json");
-
-// ── Helper: read users file ──
-async function readUsers() {
-  const raw = await fs.readFile(USERS_FILE, "utf-8");
-  return JSON.parse(raw);
-}
-
-// ── Helper: write users file ──
-async function writeUsers(users) {
-  await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
-}
 
 // Role → destination (enforced on frontend):
 // owner → office.html     (kiran@kiranregmi.com)
 // admin → admin.html      (admin@kiranregmi.com)
-// user/kid/test/adult → dashboard.html
+// user/kid/test/adult/student → dashboard.html
 //
+// NOTE: EVENT.SIGNUP is referenced below. If db/auditLogger.js's EVENT export
+// doesn't already have a SIGNUP constant, add one (it's likely just a string
+// like "signup" alongside the existing LOGIN_SUCCESS/LOGIN_FAILURE entries) --
+// I don't have that file's contents to confirm the exact shape.
+
 // ─────────────────────────────────────────
 //  POST /api/login
 // ─────────────────────────────────────────
@@ -51,10 +53,9 @@ router.post("/login", loginLimiter, async (req, res) => {
   }
 
   try {
-    const users = await readUsers();
-    const userIdx = users.findIndex(u => u.email === email);
+    const user = getUserByEmail(email);
 
-    if (userIdx === -1) {
+    if (!user) {
       auditLog({
         event_type: EVENT.LOGIN_FAILURE,
         outcome:    "failure",
@@ -65,9 +66,6 @@ router.post("/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const user = users[userIdx];
-
-    // Check account status
     if (user.profile?.status === "suspended") {
       auditLog({
         event_type: EVENT.LOGIN_FAILURE,
@@ -93,23 +91,20 @@ router.post("/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Update lastLogin timestamp — non-fatal, login succeeds even if write fails
+    // Non-fatal — login still succeeds even if this write fails
     try {
-      users[userIdx].profile = users[userIdx].profile || {};
-      users[userIdx].profile.lastLogin = new Date().toISOString();
-      await writeUsers(users);
+      updateLastLogin(email);
     } catch (writeErr) {
       console.warn("Could not update lastLogin (non-fatal):", writeErr.message);
     }
 
-    // Issue 24h token
     const token = jwt.sign(
       {
         email:       user.email,
         role:        user.role,
         permissions: user.permissions,
         fullName:    user.profile?.fullName || "",
-        initials:    user.profile?.avatarInitials || email.substring(0, 2).toUpperCase()
+        initials:    user.profile?.avatarInitials || email.substring(0, 2).toUpperCase(),
       },
       config.jwtSecret,
       { expiresIn: "24h" }
@@ -129,12 +124,77 @@ router.post("/login", loginLimiter, async (req, res) => {
       email:       user.email,
       fullName:    user.profile?.fullName || "",
       initials:    user.profile?.avatarInitials || email.substring(0, 2).toUpperCase(),
-      permissions: user.permissions
+      permissions: user.permissions,
     });
 
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: "Server error during login" });
+  }
+});
+
+// ─────────────────────────────────────────
+//  POST /api/signup — new: education-section visitor accounts
+//  Always creates role "student" — cannot self-assign owner/admin/etc.
+// ─────────────────────────────────────────
+router.post("/signup", loginLimiter, async (req, res) => {
+  const { email, password, fullName } = req.body;
+
+  if (!email || !password || !fullName?.trim()) {
+    return res.status(400).json({ message: "Full name, email, and password are required" });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
+  }
+
+  try {
+    if (emailExists(email)) {
+      auditLog({
+        event_type: EVENT.SIGNUP,
+        outcome:    "failure",
+        req,
+        user_email: email,
+        metadata:   { reason: "email_already_exists" },
+      });
+      // Deliberately vague message -- don't confirm/deny which emails already have accounts
+      return res.status(400).json({ message: "Could not create account with those details" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = createUser({ email, passwordHash, role: "student", fullName: fullName.trim() });
+
+    const token = jwt.sign(
+      {
+        email:       user.email,
+        role:        user.role,
+        permissions: user.permissions,
+        fullName:    user.profile.fullName,
+        initials:    user.profile.avatarInitials,
+      },
+      config.jwtSecret,
+      { expiresIn: "24h" }
+    );
+
+    auditLog({
+      event_type: EVENT.SIGNUP,
+      outcome:    "success",
+      req,
+      user_email: user.email,
+      user_role:  user.role,
+    });
+
+    res.status(201).json({
+      token,
+      role:        user.role,
+      email:       user.email,
+      fullName:    user.profile.fullName,
+      initials:    user.profile.avatarInitials,
+      permissions: user.permissions,
+    });
+
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.status(500).json({ message: "Server error during signup" });
   }
 });
 
@@ -156,15 +216,13 @@ router.post("/logout", authenticateToken, (req, res) => {
 //  GET /api/verify — token validity check
 // ─────────────────────────────────────────
 router.get("/verify", authenticateToken, (req, res) => {
-  // authenticateToken already validated the JWT
-  // If we reach here, token is valid
   res.json({
     valid:       true,
     email:       req.user.email,
     role:        req.user.role,
     permissions: req.user.permissions || [],
     fullName:    req.user.fullName    || "",
-    initials:    req.user.initials    || req.user.email.substring(0, 2).toUpperCase()
+    initials:    req.user.initials    || req.user.email.substring(0, 2).toUpperCase(),
   });
 });
 
@@ -173,11 +231,9 @@ router.get("/verify", authenticateToken, (req, res) => {
 // ─────────────────────────────────────────
 router.get("/me", authenticateToken, async (req, res) => {
   try {
-    const users = await readUsers();
-    const user  = users.find(u => u.email === req.user.email);
+    const user = getUserByEmail(req.user.email);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Return profile without passwordHash
     const { passwordHash, ...safe } = user;
     res.json(safe);
   } catch (err) {
@@ -197,18 +253,8 @@ router.patch("/me", authenticateToken, async (req, res) => {
   }
 
   try {
-    const users = JSON.parse(await fs.readFile(USERS_FILE, "utf-8"));
-    const idx   = users.findIndex(u => u.email === req.user.email);
-    if (idx === -1) return res.status(404).json({ message: "User not found" });
-
-    users[idx].profile = users[idx].profile || {};
-    users[idx].profile.fullName       = fullName.trim();
-    users[idx].profile.phone          = phone?.trim()   || users[idx].profile.phone   || "";
-    users[idx].profile.country        = country?.trim() || users[idx].profile.country || "";
-    users[idx].profile.avatarInitials = fullName.trim().split(" ")
-      .map(w => w[0] || "").join("").slice(0, 2).toUpperCase() || "??";
-
-    await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+    const user = updateProfile(req.user.email, { fullName, phone, country });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     auditLog({
       event_type: EVENT.ADMIN_ACTION,
@@ -216,10 +262,10 @@ router.patch("/me", authenticateToken, async (req, res) => {
       req,
       user_email: req.user.email,
       user_role:  req.user.role,
-      metadata:   { action: "self_update_profile" }
+      metadata:   { action: "self_update_profile" },
     });
 
-    const { passwordHash, ...safe } = users[idx];
+    const { passwordHash, ...safe } = user;
     res.json({ message: "Profile updated", user: safe });
   } catch (err) {
     console.error("Profile update error:", err);
