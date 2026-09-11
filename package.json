@@ -1,6 +1,6 @@
 {
   "name": "kiranregmi-backend",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "type": "module",
   "description": "kiranregmi.com backend — Express/JWT/RBAC/Audit logging",
   "main": "server.js",
@@ -12,14 +12,18 @@
     "axios": "^1.13.6",
     "axios-cookiejar-support": "^6.0.5",
     "bcryptjs": "^2.4.3",
-    "better-sqlite3": "^9.4.3",
+    "better-sqlite3": "^12.11.1",
     "cheerio": "^1.2.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
+    "googleapis": "^178.0.0",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "tough-cookie": "^6.0.1",
     "yahoo-finance2": "^3.13.2"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

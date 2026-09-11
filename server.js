@@ -1,10 +1,15 @@
 // server.js
 // ─────────────────────────────────────────────────────────────
 //  kiranregmi-backend — Main entry point
-//  Version: 2.1 | February 2026
+//  Version: 2.2 | September 2026
 //
-//  Stack: Node.js · Express · JWT · bcryptjs · SQLite (audit)
+//  Stack: Node.js · Express · JWT · bcryptjs · SQLite (audit + users/training)
 //  Hosted: Render.com
+//  Changes v2.2:
+//    - Added tradesRoutes: Google Sheets proxy for trading.html dashboard
+//    - Added trainingProgressRoutes: education-section lesson tracking
+//    - authRoutes now backed by SQLite (db/usersDb.js) instead of data/users.json,
+//      with a new POST /api/signup for education-section visitor accounts
 //  Changes v2.1:
 //    - Added progressRoutes for per-user SOC mastery sync
 //    - Token expiry updated to 24h (see authRoutes.js)
@@ -30,6 +35,8 @@ import tasksRoutes    from "./routes/tasksRoutes.js";
 import briefingRoutes from "./routes/briefingRoutes.js";
 import twpRoute       from './routes/twp-route.js';
 import marketRoutes   from './routes/marketRoutes.js';
+import tradesRoutes           from "./routes/tradesRoutes.js";
+import trainingProgressRoutes from "./routes/trainingProgressRoutes.js";
 
 const app = express();
 
@@ -70,7 +77,7 @@ app.use("/api", apiLimiter);
 //  ROUTES
 // ─────────────────────────────────────────
 
-app.use("/api",               authRoutes);      // POST /api/login, /api/logout, GET /api/verify, /api/me
+app.use("/api",               authRoutes);      // POST /api/login, /api/signup, /api/logout, GET /api/verify, /api/me
 app.use("/api/questions",     questionRoutes);  // GET  /api/questions
 app.use("/api/secure-doc",    docRoutes);       // GET  /api/secure-doc/:name
 app.use("/api/admin",         adminRoutes);     // GET  /api/admin/logs, /api/admin/stats, /api/admin/users
@@ -80,6 +87,9 @@ app.use("/api/tasks",         tasksRoutes);     // GET/POST/DELETE /api/tasks
 app.use("/api/briefing",      briefingRoutes);  // POST /api/briefing (Anthropic proxy)
 app.use("/api/twp",           twpRoute); 
 app.use("/api/market",        marketRoutes);    // Market data route (GET/POST /api/market)
+app.use("/api/trades",            tradesRoutes);            // GET (public) / POST (owner-only) trading.html data
+app.use("/api/training-progress", trainingProgressRoutes);  // GET/POST/DELETE education-section lesson completion
+
 // ─────────────────────────────────────────
 //  HEALTH CHECK
 // ─────────────────────────────────────────
@@ -88,7 +98,7 @@ app.get("/", (req, res) => {
   res.json({
     status:  "ok",
     service: "kiranregmi-backend",
-    version: "2.1",
+    version: "2.2",
     env:     config.nodeEnv,
   });
 });
@@ -117,8 +127,9 @@ app.use((err, req, res, next) => {
 // ─────────────────────────────────────────
 
 app.listen(config.port, () => {
-  console.log(`✅ kiranregmi-backend v2.1 running on port ${config.port}`);
+  console.log(`✅ kiranregmi-backend v2.2 running on port ${config.port}`);
   console.log(`🌍 Environment: ${config.nodeEnv}`);
   console.log(`🔐 Audit logging: SQLite @ db/audit.db`);
+  console.log(`👤 Users + training progress: SQLite @ db/app.db`);
   console.log(`📊 Progress sync: data/progress/`);
 });

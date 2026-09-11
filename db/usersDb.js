@@ -2,8 +2,14 @@
 // ─────────────────────────────────────────────────────────────
 //  SQLite-backed user storage — replaces data/users.json.
 //  Uses its own database file (db/app.db) rather than assuming
-//  db/auditLogger.js's connection, to avoid schema/driver conflicts.
-//  Requires: npm install better-sqlite3
+//  db/auditLogger.js's connection, to avoid schema/table conflicts --
+//  but uses the SAME better-sqlite3 driver as auditLogger.js already does,
+//  since that's a real dependency of this app already (not something we
+//  can avoid). If you were seeing native-compile errors on install, that's
+//  a Node-version issue (very new Node versions like 24.x aren't yet fully
+//  supported by better-sqlite3's native build) -- fix is switching to an
+//  older LTS Node version (e.g. `nvm install 20 && nvm use 20`), not
+//  avoiding this package.
 //
 //  On first run, if the `users` table is empty and data/users.json
 //  still exists, it auto-migrates every record over once. Safe to
@@ -150,3 +156,5 @@ export function updateProfile(email, { fullName, phone, country }) {
 }
 
 export default db;
+
+
