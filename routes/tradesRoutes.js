@@ -22,12 +22,11 @@ import { auditLog, EVENT }    from "../db/auditLogger.js";
 const router = express.Router();
 
 function getSheetsClient() {
-  const auth = new google.auth.JWT(
-    config.google.serviceAccountEmail,
-    null,
-    config.google.privateKey,
-    ["https://www.googleapis.com/auth/spreadsheets"]
-  );
+  const auth = new google.auth.JWT({
+    email: config.google.serviceAccountEmail,
+    key: config.google.privateKey,
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
   return google.sheets({ version: "v4", auth });
 }
 
