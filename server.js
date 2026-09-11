@@ -39,6 +39,7 @@ import tradesRoutes           from "./routes/tradesRoutes.js";
 import trainingProgressRoutes from "./routes/trainingProgressRoutes.js";
 
 const app = express();
+app.set("trust proxy", 1);
 
 // ─────────────────────────────────────────
 //  SECURITY MIDDLEWARE
