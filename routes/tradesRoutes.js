@@ -44,6 +44,7 @@ router.get("/", async (req, res) => {
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: config.google.sheetId,
       range: RANGE_READ,
+      valueRenderOption: "UNFORMATTED_VALUE",
     });
 
     const rows = result.data.values || [];
