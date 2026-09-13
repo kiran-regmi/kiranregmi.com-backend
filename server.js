@@ -37,6 +37,8 @@ import twpRoute       from './routes/twp-route.js';
 import marketRoutes   from './routes/marketRoutes.js';
 import tradesRoutes           from "./routes/tradesRoutes.js";
 import trainingProgressRoutes from "./routes/trainingProgressRoutes.js";
+import newsRoutes    from "./routes/newsRoutes.js";
+import journalRoutes from "./routes/journalRoutes.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -90,6 +92,8 @@ app.use("/api/twp",           twpRoute);
 app.use("/api/market",        marketRoutes);    // Market data route (GET/POST /api/market)
 app.use("/api/trades",            tradesRoutes);            // GET (public) / POST (owner-only) trading.html data
 app.use("/api/training-progress", trainingProgressRoutes);  // GET/POST/DELETE education-section lesson completion
+app.use("/api/news",    newsRoutes);
+app.use("/api/journal", journalRoutes);
 
 // ─────────────────────────────────────────
 //  HEALTH CHECK
